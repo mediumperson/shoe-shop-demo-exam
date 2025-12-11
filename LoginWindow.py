@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QMainWindow, QMessageBox
 
 
-from login_window import Ui_Login
+from login_window_ui import Ui_Login
 
 
 

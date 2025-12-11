@@ -1,10 +1,9 @@
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import QMainWindow, QWidget, QMessageBox
 from PyQt6.QtGui import QColor
-from LoginWindow import LoginWindow
-from product_list_administrator import ProductListAdministratorWindow
-from add_and_edit_product_logic import AddProductWindow
-from product_card_widget import ProductCardWidget
+from product_list_administrator_ui import ProductListAdministratorWindow
+from AddAndEditProductLogic import AddProductWindow
+from ProductCardWidget import ProductCardWidget
 
 IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'
 

@@ -2,7 +2,7 @@ import os
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QWidget, QLabel
 from PyQt6 import QtCore, QtGui, QtWidgets
-from widget2 import Ui_Form  # Предположительно, это ваш UI-файл
+from card_widget_ui import Ui_Form  # Предположительно, это ваш UI-файл
 
 # ВАЖНО: Путь должен быть правильным
 IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'

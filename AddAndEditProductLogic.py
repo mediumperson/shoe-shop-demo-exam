@@ -5,7 +5,7 @@ from PyQt6 import QtCore
 from PyQt6.QtGui import QPixmap, QCloseEvent
 from PyQt6.QtWidgets import QDialog, QMessageBox, QFileDialog
 
-from product_add_edit import Ui_Dialog
+from product_add_edit_ui import Ui_Dialog
 IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'
 
 class AddProductWindow(QDialog, Ui_Dialog):
