@@ -208,6 +208,12 @@
    </item>
    <item row="10" column="0">
     <widget class="QTextEdit" name="description_input">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
      <property name="font">
       <font>
        <family>Times New Roman</family>

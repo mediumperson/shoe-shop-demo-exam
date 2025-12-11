@@ -79,7 +79,7 @@
          <pixmap>../Desktop/import/1.jpg</pixmap>
         </property>
         <property name="scaledContents">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -353,7 +353,7 @@ border: 1px solid black;
          <string>Действующая скидка</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <set>Qt::AlignmentFlag::AlignCenter</set>
         </property>
        </widget>
       </item>

@@ -1,8 +1,10 @@
+import os
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QWidget, QLabel
 from PyQt6 import QtCore, QtGui, QtWidgets
-import os
-from widget2 import Ui_Form
+from widget2 import Ui_Form  # Предположительно, это ваш UI-файл
 
+# ВАЖНО: Путь должен быть правильным
 IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'
 
 
@@ -11,10 +13,16 @@ class ProductCardWidget(QWidget, Ui_Form):
 
     def __init__(self, product_data, parent=None):
         super().__init__(parent)
+        self.selected_style = 'border: 2px solid #00FA9A;'
+        self.default_style = 'border: 1px solid black;'
         self.setupUi(self)
         self.product_data = product_data
         self.article = product_data.get('product_article')
         self.original_style = self.widget_7.styleSheet()
+
+        # 💡 КЛЮЧЕВАЯ НАСТРОЙКА: Гарантируем, что виджет фото масштабирует контент
+        self.photo_10.setScaledContents(True)
+        self.photo_10.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         self.load_data_to_card()
         self.widget_7.mousePressEvent = self.card_click_handler
@@ -49,6 +57,9 @@ class ProductCardWidget(QWidget, Ui_Form):
         quantity_text = f"Количество на складе: {quantity}"
         self.label_49.setText(quantity_text)
 
+
+        self.load_product_photo(data.get('product_photo'))
+
         if quantity == 0:
             self.label_49.setStyleSheet("color: #0000FF; border: 0px solid black;")
 
@@ -60,9 +71,10 @@ class ProductCardWidget(QWidget, Ui_Form):
         else:
             self.sale_11.setStyleSheet("border: 1px solid black; background-color:#7FFF00;")
 
-        self.load_product_photo(data.get('product_photo'))
 
     def load_product_photo(self, photo_filename):
+        self.photo_10.clear()  # Очищаем, чтобы убрать текст "Нет фото"
+
 
         if photo_filename:
             full_path = os.path.join(IMAGE_FOLDER, photo_filename)
@@ -71,25 +83,57 @@ class ProductCardWidget(QWidget, Ui_Form):
                 pixmap = QtGui.QPixmap(full_path)
 
                 if not pixmap.isNull():
-                    self.photo_10.setPixmap(pixmap.scaled(self.photo_10.size(),
-                                                          QtCore.Qt.AspectRatioMode.KeepAspectRatio,
-                                                          QtCore.Qt.TransformationMode.SmoothTransformation))
+                    # 💡 КРИТИЧЕСКИЙ ШАГ 2: Только устанавливаем pixmap
+                    self.photo_10.setPixmap(pixmap)
+                    self.photo_10.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
                     return
 
         default_path = os.path.join(IMAGE_FOLDER, "picture.png")
         if os.path.exists(default_path):
             pixmap_default = QtGui.QPixmap(default_path)
+
             if not pixmap_default.isNull():
-                self.photo_10.setPixmap(pixmap_default.scaled(self.photo_10.size(),
-                                                              QtCore.Qt.AspectRatioMode.KeepAspectRatio,
-                                                              QtCore.Qt.TransformationMode.SmoothTransformation))
+                # 💡 КРИТИЧЕСКИЙ ШАГ 2: Только устанавливаем pixmap
+                self.photo_10.setPixmap(pixmap_default)
+                self.photo_10.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
                 return
 
+        # 3. Если ничего не найдено
         self.photo_10.setText("Нет фото")
         self.photo_10.setPixmap(QtGui.QPixmap())
         self.photo_10.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
     def card_click_handler(self, event):
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
-            # Выпускаем сигнал, передавая артикул и сам виджет
             self.product_clicked.emit(self.article, self)
+
+            # 1. Обработка ДВОЙНОГО КЛИКА
+            if event.type() == QtCore.QEvent.Type.MouseButtonDblClick:
+                print(f"ДВОЙНОЙ КЛИК: Редактирование товара {self.article}")
+                self.product_clicked.emit(self.article, self)
+
+            # 2. Обработка ОДИНОЧНОГО КЛИКА
+            elif event.type() == QtCore.QEvent.Type.MouseButtonPress:
+                self.highlight_card()
+
+
+    def highlight_card(self):
+        current_style = self.widget_7.styleSheet()
+
+        if "border: 3px solid" in current_style:
+            # Снимаем выделение (возвращаем исходный стиль)
+            self.widget_7.setStyleSheet(self.original_style)
+        else:
+            # Выделяем (можно использовать другой цвет, например, желтый)
+            self.widget_7.setStyleSheet(current_style + "border: 2px solid #00FA9A")  # Золотой цвет
+
+    def set_selected(self, state: bool):
+        """Устанавливает или снимает визуальное выделение карточки."""
+        self.is_selected = state
+
+        if state:
+            # Применяем стиль выделения (золотая рамка)
+            self.widget_7.setStyleSheet(self.selected_style)
+        else:
+            # Применяем базовый стиль (черная рамка с эффектом hover)
+            self.widget_7.setStyleSheet(self.default_style)

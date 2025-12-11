@@ -18,9 +18,7 @@ class Ui_Form(object):
         self.widget_7 = QtWidgets.QWidget(parent=Form)
         self.widget_7.setMinimumSize(QtCore.QSize(900, 200))
         self.widget_7.setMaximumSize(QtCore.QSize(900, 200))
-        self.widget_7.setStyleSheet("    border: 1px solid black; \n"
-"\n"
-"")
+        self.widget_7.setStyleSheet('border: 1px solid black;')
         self.widget_7.setObjectName("widget_7")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget_7)
         self.horizontalLayout.setContentsMargins(15, 15, 15, 15)
@@ -37,7 +35,7 @@ class Ui_Form(object):
         self.photo_10.setStyleSheet("")
         self.photo_10.setText("")
         self.photo_10.setPixmap(QtGui.QPixmap("../Desktop/import/1.jpg"))
-        self.photo_10.setScaledContents(False)
+        self.photo_10.setScaledContents(True)
         self.photo_10.setObjectName("photo_10")
         self.horizontalLayout.addWidget(self.photo_10)
         self.widget_8 = QtWidgets.QWidget(parent=self.widget_7)

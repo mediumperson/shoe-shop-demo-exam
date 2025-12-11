@@ -125,6 +125,7 @@ class Ui_Dialog(object):
         self.label_6.setObjectName("label_6")
         self.gridLayout.addWidget(self.label_6, 9, 0, 1, 1)
         self.description_input = QtWidgets.QTextEdit(parent=Dialog)
+        self.description_input.setMaximumSize(QtCore.QSize(16777215, 50))
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
         font.setPointSize(10)

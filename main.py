@@ -8,6 +8,8 @@ from ProductListAdministrator import ProductListWindow
 
 class ApplicationController:
     def __init__(self, database_manager):
+        self.current_user_role = None
+        self.current_user_name = None
         self.login_window = None
         self.db_manager = database_manager
         self.current_window = None
@@ -21,14 +23,10 @@ class ApplicationController:
             self.login_window.close()
 
         self.current_window = None
+        self.current_user_role = user_role
+        self.current_user_name = username
 
-        if user_role == 4:
-            self.current_window = ProductListWindow(self.db_manager)
-        elif user_role in (3, 1, 2):
-            self.current_window = ProductListWindow(self.db_manager)
-        else:
-            QMessageBox.critical(None, "Ошибка", "Неизвестная роль пользователя.")
-            return
+        self.current_window = ProductListWindow(self.db_manager, self.current_user_role, self.current_user_name)
 
         if self.current_window:
             self.current_window.setWindowTitle(f"Список товаров (Пользователь: {username}, Роль: {user_role})")
@@ -37,11 +35,13 @@ class ApplicationController:
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
- #   app.setStyle('Fusion')
+    app.setStyle('Fusion')
 #    background-color: white;
 #    color: black; для белой темы сунуть внутрь Qwidget
     app.setStyleSheet("""
     QWidget {
+    background-color: white;
+    color: black; для белой темы сунуть внутрь Qwidget
     font-family: "Times New Roman", Times, serif;
     font-size: 15px;
 }

@@ -1,18 +1,29 @@
-from PyQt6 import QtCore, QtWidgets
-from PyQt6.QtWidgets import QDialog, QMessageBox, QLineEdit, QPushButton, QComboBox, QTextEdit
+import os
+import shutil
+
+from PyQt6 import QtCore
+from PyQt6.QtGui import QPixmap, QCloseEvent
+from PyQt6.QtWidgets import QDialog, QMessageBox, QFileDialog
 
 from product_add_edit import Ui_Dialog
-
+IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'
 
 class AddProductWindow(QDialog, Ui_Dialog):
 
     product_added = QtCore.pyqtSignal()
+
+    old_photo_path: str | None = None
+    new_photo_path: str | None = None
 
     def __init__(self, database_manager, parent=None):
         super().__init__(parent)
         self.db_manager = database_manager
         self.is_editing = False
         self.current_article = None
+
+
+        self.old_photo_path = None
+        self.new_photo_path = None
 
         self.setupUi(self)
         self.connect_signals()
@@ -23,6 +34,7 @@ class AddProductWindow(QDialog, Ui_Dialog):
     def connect_signals(self):
         self.save_button.clicked.connect(self.save_product_data)
         self.cancel_button.clicked.connect(self.close)
+        self.download_photo.clicked.connect(self.download_photo_handler)
 
     def load_product_data(self, product_data):
         self.is_editing = True
@@ -39,6 +51,118 @@ class AddProductWindow(QDialog, Ui_Dialog):
         self.metric_input.setText(product_data.get('unit_name', ''))
         self.quantity_input.setText(str(product_data.get('product_quantity_stock', 0)))
         self.discount_input.setText(str(product_data.get('product_discount_amount', 0)))
+
+        # 💡 ЛОГИКА ФОТО: Сохраняем путь к старой фотографии
+        # Мы используем 'product_photo' из данных БД, которая содержит только имя файла (например, 'shoe.png')
+        photo_filename = product_data.get('product_photo')
+
+        if photo_filename:
+            # old_photo_path - это полный путь к файлу в папке проекта, например, 'images/shoe.png'
+            self.old_photo_path = os.path.join(IMAGE_FOLDER, photo_filename)
+            self.set_photo(self.old_photo_path)
+        else:
+            self.set_photo(None)  # Установить дефолтную заглушку
+
+    def closeEvent(self, event: QCloseEvent):
+        """Обрабатывает событие закрытия окна (нажатие на крестик)."""
+
+        # 1. Проверяем, были ли внесены изменения
+        # 💡 ВАЖНО: Вам нужно добавить логику проверки изменений (например, self.is_data_modified)
+        # Если вы всегда хотите сохранять при закрытии, можете пропустить эту проверку.
+
+        reply = QMessageBox.question(
+            self,
+            "Сохранение",
+            "Вы хотите сохранить изменения перед закрытием?",
+            QMessageBox.StandardButton.Save |
+            QMessageBox.StandardButton.Discard |
+            QMessageBox.StandardButton.Cancel
+        )
+
+        if reply == QMessageBox.StandardButton.Save:
+            # Вызываем метод, который выполняет сохранение
+            # Предполагается, что этот метод также эмитирует сигнал product_added и закрывает окно.
+            self.save_product_data()
+            event.accept()  # Разрешаем закрытие
+
+        elif reply == QMessageBox.StandardButton.Discard:
+            event.accept()  # Закрываем без сохранения
+
+        else:  # QMessageBox.StandardButton.Cancel
+            event.ignore()  # Отменяем закрытие
+
+    def set_photo(self, image_path):
+
+        self.photo.clear()
+
+        if image_path and os.path.exists(image_path):
+            pixmap = QPixmap(image_path)
+
+            if pixmap.isNull():
+                # Если файл найден, но загрузить не удалось (неверный формат)
+                self.photo.setText("Ошибка: Неверный формат фото")
+                return
+
+            self.photo.setPixmap(pixmap)
+            self.photo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        else:
+            self.photo.setText("Нет фото")
+
+    def download_photo_handler(self):
+
+        temp_photo_path, _ = QFileDialog.getOpenFileName(
+            self, "Выбрать фотографию", "",
+            "Файлы изображений (*.png *.jpg *.jpeg *.webp)"
+        )
+
+        # [cite_start]Проверяем, был ли файл выбран [cite: 4]
+        if temp_photo_path:
+            # Сохраняем путь к выбранному файлу (еще не скопирован)
+            self.new_photo_path = temp_photo_path
+            # Немедленно отображаем новое фото для превью
+            self.set_photo(self.new_photo_path)
+        else:
+            return
+
+    def _handle_photo_file(self) -> str | None:
+        if not self.new_photo_path:
+            if self.old_photo_path:
+                return os.path.basename(self.old_photo_path)
+            return None  # Нет ни нового, ни старого фото
+
+        base_name = os.path.basename(self.new_photo_path)
+        destination_path = os.path.join(IMAGE_FOLDER, base_name)
+
+        if self.is_editing and self.old_photo_path and self.old_photo_path != destination_path:
+            if os.path.exists(self.old_photo_path):
+                try:
+                    # [cite_start]os.remove(self.old_photo.path) [cite: 1] (исправленный синтаксис)
+                    os.remove(self.old_photo_path)
+                    print(f"Старый файл удален: {self.old_photo_path}")
+                except Exception as e:
+                    print(f"Предупреждение: Не удалось удалить старый файл {self.old_photo_path}: {e}")
+                    # Не блокируем операцию, так как копирование может быть успешным
+
+        # 2. Копирование нового фото
+        try:
+            # [cite_start]shutil.cooyooneshoto, path, [cite: 10] (используем shutil.copy2)
+            shutil.copy2(self.new_photo_path, destination_path)
+            print(f"Файл успешно скопирован в: {destination_path}")
+
+            # Сбрасываем new_photo_path, чтобы при повторном сохранении не копировать файл снова
+            self.new_photo_path = None
+
+            return base_name  # Возвращаем имя файла для записи в БД
+
+        except Exception as e:
+            QMessageBox.critical(self, "Ошибка фото", f"Не удалось скопировать файл изображения: {e}")
+
+            # Если копирование не удалось, возвращаем None, чтобы в БД не сохранилось неверное имя
+            # Если это режим редактирования, можно вернуть старое имя:
+            if self.is_editing and self.old_photo_path:
+                return os.path.basename(self.old_photo_path)
+
+            return None
 
     def get_form_data(self):
         data = {
@@ -80,6 +204,9 @@ class AddProductWindow(QDialog, Ui_Dialog):
         if not self.validate_data(data):
             return
 
+        photo_filename = self._handle_photo_file()
+        data['product_photo'] = photo_filename
+
         try:
             data['product_cost'] = float(data['product_cost'])
             data['product_quantity_stock'] = int(data['product_quantity_stock'])
@@ -99,3 +226,4 @@ class AddProductWindow(QDialog, Ui_Dialog):
 
         except Exception as e:
             QMessageBox.critical(self, "Ошибка БД", f"Критическая ошибка при сохранении: {e}")
+
