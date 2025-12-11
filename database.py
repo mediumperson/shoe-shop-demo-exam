@@ -146,8 +146,6 @@ class Database:
             QMessageBox.critical(None, "Ошибка БД", f"Ошибка при получении списка поставщиков: {e}")
             return []
 
-
-
     def get_product_by_article(self, article):
         query = """
         SELECT
@@ -373,6 +371,64 @@ class Database:
         data['unit_id'] = self.get_id_by_name('unit', 'unit_name', unit_name, 'unit_id')
 
         return data
+
+    def get_all_orders(self) -> list:
+        """
+        Получает список всех заказов, используя точные названия таблиц из ER-диаграммы:
+        order, order_status, pickup_point, user_account.
+        """
+        if self.cursor is None:
+            return []
+
+        query = """
+            SELECT 
+                o.order_id, 
+                o.order_code,            -- Код заказа (из таблицы order)
+                os.status_name,          -- Название статуса
+                o.order_date, 
+                o.order_delivery_date,   
+                pp.pickup_point_address AS pickup_address, -- Адрес пункта выдачи
+                ua.user_login AS client_name               -- Логин клиента (предполагаем, что это имя)
+            FROM 
+                "order" o -- Таблица "order" взята в кавычки, т.к. 'order' - это ключевое слово SQL
+            JOIN 
+                order_status os ON o.order_status_id = os.status_id 
+            LEFT JOIN
+                pickup_point pp ON o.order_pickup_point_id = pp.pickup_point_id
+            LEFT JOIN  
+                user_account ua ON o.order_client_id = ua.user_id -- Связь с таблицей user_account
+            ORDER BY 
+                o.order_date DESC;
+        """
+
+        orders = []
+        try:
+            self.cursor.execute(query)
+            columns = [desc[0] for desc in self.cursor.description]
+
+            for row in self.cursor.fetchall():
+                order_data = dict(zip(columns, row))
+
+                # Форматируем даты
+                if order_data.get('order_date'):
+                    # Преобразуем объект datetime в строку
+                    order_data['order_date'] = order_data['order_date'].strftime('%d.%m.%Y %H:%M')
+
+                # order_delivery_date может быть NULL, нужна проверка
+                delivery_date = order_data.get('order_delivery_date')
+                if delivery_date:
+                    order_data['order_delivery_date'] = delivery_date.strftime('%d.%m.%Y')
+                else:
+                    order_data['order_delivery_date'] = "Н/Д"
+
+                orders.append(order_data)
+
+            return orders
+
+        except Exception as e:
+            # 💡 Если возникнут ошибки, они будут здесь
+            print(f"DEBUG (Database): Критическая ошибка при получении списка заказов: {e}")
+            return []
 
     def close(self):
         if self.conn:

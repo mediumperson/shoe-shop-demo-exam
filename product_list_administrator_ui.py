@@ -41,10 +41,6 @@ class ProductListAdministratorWindow(object):
         self.orders = QtWidgets.QPushButton(parent=self.centralwidget)
         self.orders.setMinimumSize(QtCore.QSize(200, 0))
         self.orders.setMaximumSize(QtCore.QSize(200, 50))
-        font = QtGui.QFont()
-        font.setFamily("Times New Roman")
-        font.setPointSize(12)
-        self.orders.setFont(font)
         self.orders.setStyleSheet("QPushButton#orders{\n"
 "    border: 1px solid #000; \n"
 "    background-color:#7FFF00;\n"

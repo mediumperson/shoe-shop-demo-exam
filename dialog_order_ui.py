@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'dialog_order.ui'
+# Form implementation generated from reading ui file 'dialog_order_ui.ui'
 #
 # Created by: PyQt6 UI code generator 6.10.0
 #
@@ -9,15 +9,13 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(671, 687)
-        font = QtGui.QFont()
-        font.setFamily("Times New Roman")
-        font.setPointSize(12)
-        Dialog.setFont(font)
-        self.gridLayout_2 = QtWidgets.QGridLayout(Dialog)
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(619, 678)
+        self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
@@ -25,11 +23,7 @@ class Ui_Dialog(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.order_button_back = QtWidgets.QPushButton(parent=Dialog)
-        font = QtGui.QFont()
-        font.setFamily("Times New Roman")
-        font.setPointSize(12)
-        self.order_button_back.setFont(font)
+        self.order_button_back = QtWidgets.QPushButton(parent=self.centralwidget)
         self.order_button_back.setStyleSheet("QPushButton#order_button_back {\n"
 "    background-color: #7FFF00;\n"
 "}\n"
@@ -42,11 +36,7 @@ class Ui_Dialog(object):
         self.horizontalLayout.addWidget(self.order_button_back)
         spacerItem = QtWidgets.QSpacerItem(268, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.order_button_add = QtWidgets.QPushButton(parent=Dialog)
-        font = QtGui.QFont()
-        font.setFamily("Times New Roman")
-        font.setPointSize(12)
-        self.order_button_add.setFont(font)
+        self.order_button_add = QtWidgets.QPushButton(parent=self.centralwidget)
         self.order_button_add.setStyleSheet("QPushButton#order_button_add {\n"
 "    background-color: #7FFF00;\n"
 "}\n"
@@ -57,7 +47,7 @@ class Ui_Dialog(object):
 "")
         self.order_button_add.setObjectName("order_button_add")
         self.horizontalLayout.addWidget(self.order_button_add)
-        self.order_button_remove = QtWidgets.QPushButton(parent=Dialog)
+        self.order_button_remove = QtWidgets.QPushButton(parent=self.centralwidget)
         self.order_button_remove.setStyleSheet("QPushButton#order_button_remove {\n"
 "    background-color: #7FFF00;\n"
 "}\n"
@@ -69,11 +59,11 @@ class Ui_Dialog(object):
         self.order_button_remove.setObjectName("order_button_remove")
         self.horizontalLayout.addWidget(self.order_button_remove)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        self.scrollArea = QtWidgets.QScrollArea(parent=Dialog)
+        self.scrollArea = QtWidgets.QScrollArea(parent=self.centralwidget)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 622, 625))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 593, 562))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.verticalLayout_12 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_12.setObjectName("verticalLayout_12")
@@ -93,10 +83,6 @@ class Ui_Dialog(object):
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.widget_order_name = QtWidgets.QWidget(parent=self.widget_order)
         self.widget_order_name.setMinimumSize(QtCore.QSize(400, 0))
-        font = QtGui.QFont()
-        font.setFamily("Times New Roman")
-        font.setPointSize(10)
-        self.widget_order_name.setFont(font)
         self.widget_order_name.setStyleSheet("QWidget#widget_order_name {\n"
 "    border: 1px solid #000; \n"
 "}")
@@ -110,7 +96,6 @@ class Ui_Dialog(object):
         font.setFamily("Times New Roman")
         font.setPointSize(10)
         font.setBold(True)
-        font.setWeight(75)
         self.label_art.setFont(font)
         self.label_art.setFocusPolicy(QtCore.Qt.FocusPolicy.ClickFocus)
         self.label_art.setObjectName("label_art")
@@ -180,7 +165,6 @@ class Ui_Dialog(object):
         font.setFamily("Times New Roman")
         font.setPointSize(10)
         font.setBold(True)
-        font.setWeight(75)
         self.label_art_2.setFont(font)
         self.label_art_2.setFocusPolicy(QtCore.Qt.FocusPolicy.ClickFocus)
         self.label_art_2.setObjectName("label_art_2")
@@ -250,7 +234,6 @@ class Ui_Dialog(object):
         font.setFamily("Times New Roman")
         font.setPointSize(10)
         font.setBold(True)
-        font.setWeight(75)
         self.label_art_3.setFont(font)
         self.label_art_3.setFocusPolicy(QtCore.Qt.FocusPolicy.ClickFocus)
         self.label_art_3.setObjectName("label_art_3")
@@ -320,7 +303,6 @@ class Ui_Dialog(object):
         font.setFamily("Times New Roman")
         font.setPointSize(10)
         font.setBold(True)
-        font.setWeight(75)
         self.label_art_4.setFont(font)
         self.label_art_4.setFocusPolicy(QtCore.Qt.FocusPolicy.ClickFocus)
         self.label_art_4.setObjectName("label_art_4")
@@ -364,43 +346,51 @@ class Ui_Dialog(object):
         self.verticalLayout.addWidget(self.scrollArea)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 619, 33))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.order_button_back.setText(_translate("Dialog", " Назад к товарам "))
-        self.order_button_add.setText(_translate("Dialog", " Добавить заказ "))
-        self.order_button_remove.setText(_translate("Dialog", " Удалить заказ "))
-        self.label_art.setText(_translate("Dialog", "Артикул заказа"))
-        self.label_status.setText(_translate("Dialog", "Статус заказа"))
-        self.label_adress.setText(_translate("Dialog", "Адрес пункта выдачи"))
-        self.label_order_date.setText(_translate("Dialog", "Дата заказа"))
-        self.label_delivery_date.setText(_translate("Dialog", "Дата доставки"))
-        self.label_art_2.setText(_translate("Dialog", "Артикул заказа"))
-        self.label_status_2.setText(_translate("Dialog", "Статус заказа"))
-        self.label_adress_2.setText(_translate("Dialog", "Адрес пункта выдачи"))
-        self.label_order_date_2.setText(_translate("Dialog", "Дата заказа"))
-        self.label_delivery_date_2.setText(_translate("Dialog", "Дата доставки"))
-        self.label_art_3.setText(_translate("Dialog", "Артикул заказа"))
-        self.label_status_3.setText(_translate("Dialog", "Статус заказа"))
-        self.label_adress_3.setText(_translate("Dialog", "Адрес пункта выдачи"))
-        self.label_order_date_3.setText(_translate("Dialog", "Дата заказа"))
-        self.label_delivery_date_3.setText(_translate("Dialog", "Дата доставки"))
-        self.label_art_4.setText(_translate("Dialog", "Артикул заказа"))
-        self.label_status_4.setText(_translate("Dialog", "Статус заказа"))
-        self.label_adress_4.setText(_translate("Dialog", "Адрес пункта выдачи"))
-        self.label_order_date_4.setText(_translate("Dialog", "Дата заказа"))
-        self.label_delivery_date_4.setText(_translate("Dialog", "Дата доставки"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.order_button_back.setText(_translate("MainWindow", " Назад к товарам "))
+        self.order_button_add.setText(_translate("MainWindow", " Добавить заказ "))
+        self.order_button_remove.setText(_translate("MainWindow", " Удалить заказ "))
+        self.label_art.setText(_translate("MainWindow", "Артикул заказа"))
+        self.label_status.setText(_translate("MainWindow", "Статус заказа"))
+        self.label_adress.setText(_translate("MainWindow", "Адрес пункта выдачи"))
+        self.label_order_date.setText(_translate("MainWindow", "Дата заказа"))
+        self.label_delivery_date.setText(_translate("MainWindow", "Дата доставки"))
+        self.label_art_2.setText(_translate("MainWindow", "Артикул заказа"))
+        self.label_status_2.setText(_translate("MainWindow", "Статус заказа"))
+        self.label_adress_2.setText(_translate("MainWindow", "Адрес пункта выдачи"))
+        self.label_order_date_2.setText(_translate("MainWindow", "Дата заказа"))
+        self.label_delivery_date_2.setText(_translate("MainWindow", "Дата доставки"))
+        self.label_art_3.setText(_translate("MainWindow", "Артикул заказа"))
+        self.label_status_3.setText(_translate("MainWindow", "Статус заказа"))
+        self.label_adress_3.setText(_translate("MainWindow", "Адрес пункта выдачи"))
+        self.label_order_date_3.setText(_translate("MainWindow", "Дата заказа"))
+        self.label_delivery_date_3.setText(_translate("MainWindow", "Дата доставки"))
+        self.label_art_4.setText(_translate("MainWindow", "Артикул заказа"))
+        self.label_status_4.setText(_translate("MainWindow", "Статус заказа"))
+        self.label_adress_4.setText(_translate("MainWindow", "Адрес пункта выдачи"))
+        self.label_order_date_4.setText(_translate("MainWindow", "Дата заказа"))
+        self.label_delivery_date_4.setText(_translate("MainWindow", "Дата доставки"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
     sys.exit(app.exec())

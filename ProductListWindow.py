@@ -4,6 +4,7 @@ from PyQt6.QtGui import QColor
 from product_list_administrator_ui import ProductListAdministratorWindow
 from AddAndEditProductLogic import AddProductWindow
 from ProductCardWidget import ProductCardWidget
+from OrderListWindow import OrderListWindow
 
 IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'
 
@@ -202,7 +203,7 @@ class ProductListWindow(QMainWindow, ProductListAdministratorWindow):
         self.exit_product_list.clicked.connect(self.close)
         self.add_product.clicked.connect(self.open_add_product_screen)
         self.remove_product.clicked.connect(self.handle_delete_product)
-        self.orders.clicked.connect(lambda: QMessageBox.information(self, "Действие", "Окно заказов"))
+        self.orders.clicked.connect(self.open_orders_screen)
 
         self.search.textChanged.connect(self.load_products)
 
@@ -278,3 +279,18 @@ class ProductListWindow(QMainWindow, ProductListAdministratorWindow):
             self.verticalLayout.addWidget(card)
         self.verticalLayout.addStretch(1)
 
+    def open_orders_screen(self):
+
+        # Предполагаем, что self.current_user_role — это данные пользователя (или роль)
+        user_data = {'role': self.current_user_role}
+
+        if not hasattr(self, 'orders_window') or self.orders_window is None:
+            # ⚠️ ИСПРАВЛЕНИЕ: Создаем OrderListWindow, передавая БД, данные пользователя и родителя
+            self.orders_window = OrderListWindow(
+                database=self.db_manager,
+                user_data=user_data,
+                parent=self  # Передаем self (ProductListWindow) как родителя
+            )
+
+        self.orders_window.show()
+        self.orders_window.activateWindow()

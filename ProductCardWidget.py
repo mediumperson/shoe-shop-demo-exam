@@ -125,7 +125,10 @@ class ProductCardWidget(QWidget, Ui_Form):
             self.widget_7.setStyleSheet(self.original_style)
         else:
             # Выделяем (можно использовать другой цвет, например, желтый)
-            self.widget_7.setStyleSheet(current_style + "border: 2px solid #00FA9A")  # Золотой цвет
+            self.widget_7.setStyleSheet(current_style +
+                "QWidget#widget_order { border: 3px solid #00FA9A;}"
+                "QWidget#widget_order:hover { border: 3px solid #00FA9A; }"
+            )
 
     def set_selected(self, state: bool):
         """Устанавливает или снимает визуальное выделение карточки."""

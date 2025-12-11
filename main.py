@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication, QMessageBox
 
 from database import Database
 from LoginWindow import LoginWindow
-from ProductListAdministrator import ProductListWindow
+from ProductListWindow import ProductListWindow
 
 
 class ApplicationController:

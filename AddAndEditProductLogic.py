@@ -70,26 +70,6 @@ class AddProductWindow(QDialog, Ui_Dialog):
         # 💡 ВАЖНО: Вам нужно добавить логику проверки изменений (например, self.is_data_modified)
         # Если вы всегда хотите сохранять при закрытии, можете пропустить эту проверку.
 
-        reply = QMessageBox.question(
-            self,
-            "Сохранение",
-            "Вы хотите сохранить изменения перед закрытием?",
-            QMessageBox.StandardButton.Save |
-            QMessageBox.StandardButton.Discard |
-            QMessageBox.StandardButton.Cancel
-        )
-
-        if reply == QMessageBox.StandardButton.Save:
-            # Вызываем метод, который выполняет сохранение
-            # Предполагается, что этот метод также эмитирует сигнал product_added и закрывает окно.
-            self.save_product_data()
-            event.accept()  # Разрешаем закрытие
-
-        elif reply == QMessageBox.StandardButton.Discard:
-            event.accept()  # Закрываем без сохранения
-
-        else:  # QMessageBox.StandardButton.Cancel
-            event.ignore()  # Отменяем закрытие
 
     def set_photo(self, image_path):
 
