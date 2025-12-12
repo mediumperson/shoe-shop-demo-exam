@@ -116,13 +116,11 @@ class AddProductWindow(QDialog, Ui_Dialog):
 
         if self.is_editing and self.old_photo_path and self.old_photo_path != destination_path:
             if os.path.exists(self.old_photo_path):
-                    # [cite_start]os.remove(self.old_photo.path) [cite: 1] (исправленный синтаксис)
                 os.remove(self.old_photo_path)
                     # Не блокируем операцию, так как копирование может быть успешным
 
         # 2. Копирование нового фото
         try:
-            # [cite_start]shutil.cooyooneshoto, path, [cite: 10] (используем shutil.copy2)
             shutil.copy2(self.new_photo_path, destination_path)
 
             # Сбрасываем new_photo_path, чтобы при повторном сохранении не копировать файл снова

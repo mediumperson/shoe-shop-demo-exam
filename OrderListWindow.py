@@ -21,18 +21,15 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
     add_edit_order_window: QDialog | None = None
 
     def __init__(self, database, user_data: dict, parent=None):
-        # ⚠️ Наследуемся от QMainWindow, чтобы соответствовать UI
         super().__init__(parent)
         self.db_manager = database
         self.user_data = user_data
 
         self.setupUi(self)
 
-        # ⚠️ Устанавливаем QVBoxLayout, куда будут добавляться карточки
-        # Это verticalLayout_11, который находится внутри scrollAreaWidgetContents_2
         self.orders_vbox_layout = self.verticalLayout_11
         self.orders_vbox_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
-        self.setWindowTitle(f"Каталог товаров")
+        self.setWindowTitle(f"Список заказов")
         self.setWindowIcon(QIcon('C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images\\Icon.png'))
 
         # 1. Очистка статических шаблонов и сброс выбора
@@ -44,9 +41,6 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
         # 3. Загрузка данных при старте
         self.load_orders()
 
-    # ----------------------------------------------------
-    # ИНИЦИАЛИЗАЦИЯ И ОЧИСТКА
-    # ----------------------------------------------------
 
     def connect_signals(self):
         """Подключение всех сигналов UI к функциям-обработчикам."""
@@ -93,7 +87,6 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
     def load_orders(self):
         """Загружает список заказов из БД и отображает их."""
 
-        # ⚠️ КРИТИЧЕСКОЕ ИЗМЕНЕНИЕ: Сброс выбранного состояния перед очисткой списка
         self.selected_order_widget = None
         self.selected_order_id = None
 
@@ -113,7 +106,6 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
         self.orders_vbox_layout.addStretch(1)
 
     def display_orders(self, orders: list):
-        """Динамически создает и добавляет виджеты заказов в список."""
 
         for order in orders:
             # Используем кастомный виджет OrderCardWidget
@@ -124,9 +116,6 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
 
             self.orders_vbox_layout.addWidget(order_card_widget)
 
-    # ----------------------------------------------------
-    # ОБРАБОТЧИКИ КНОПОК И КЛИКОВ
-    # ----------------------------------------------------
 
     def handle_order_card_click(self, order_id: int, clicked_widget: OrderCardWidget):
         """
@@ -155,9 +144,6 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
         self.selected_order_widget = clicked_widget
         self.selected_order_id = order_id
 
-    # ----------------------------------------------------
-    # ⚠️ ФУНКЦИОНАЛ ДОБАВЛЕНИЯ/РЕДАКТИРОВАНИЯ
-    # ----------------------------------------------------
 
     def open_add_order_screen(self):
         """Открытие окна для создания нового заказа."""
@@ -203,11 +189,9 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
 
         if reply == QMessageBox.StandardButton.Yes:
             try:
-                # ⚠️ Вызов метода БД для удаления
                 if self.db_manager.delete_order_by_id(self.selected_order_id):
                     QMessageBox.information(self, "Успех", f"Заказ #{self.selected_order_id} успешно удален!")
 
-                    # ❗ Сброс ссылок, чтобы предотвратить ошибку при следующем клике
                     self.selected_order_widget = None
                     self.selected_order_id = None
 

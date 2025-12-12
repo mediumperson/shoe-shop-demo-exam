@@ -20,7 +20,6 @@ class ProductCardWidget(QWidget, Ui_Form):
         self.article = product_data.get('product_article')
         self.original_style = self.widget_7.styleSheet()
 
-        # 💡 КЛЮЧЕВАЯ НАСТРОЙКА: Гарантируем, что виджет фото масштабирует контент
         self.photo_10.setScaledContents(True)
         self.photo_10.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
@@ -83,7 +82,6 @@ class ProductCardWidget(QWidget, Ui_Form):
                 pixmap = QtGui.QPixmap(full_path)
 
                 if not pixmap.isNull():
-                    # 💡 КРИТИЧЕСКИЙ ШАГ 2: Только устанавливаем pixmap
                     self.photo_10.setPixmap(pixmap)
                     self.photo_10.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
                     return

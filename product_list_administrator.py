@@ -13,7 +13,7 @@ class Ui_ProductListAdministratorWindow(object):
     def setupUi(self, ProductListAdministratorWindow):
         ProductListAdministratorWindow.setObjectName("ProductListAdministratorWindow")
         ProductListAdministratorWindow.resize(975, 605)
-        ProductListAdministratorWindow.setMinimumSize(QtCore.QSize(250, 0))
+        ProductListAdministratorWindow.setMinimumSize(QtCore.QSize(275, 0))
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
         font.setPointSize(12)
@@ -147,7 +147,7 @@ class Ui_ProductListAdministratorWindow(object):
         self.horizontalLayout.addWidget(self.storage)
         self.label_2 = QtWidgets.QLabel(parent=self.centralwidget)
         self.label_2.setMinimumSize(QtCore.QSize(175, 50))
-        self.label_2.setMaximumSize(QtCore.QSize(175, 50))
+        self.label_2.setMaximumSize(QtCore.QSize(250, 50))
         self.label_2.setFrameShape(QtWidgets.QFrame.Shape.Box)
         self.label_2.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.label_2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)

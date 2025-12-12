@@ -10,7 +10,6 @@ class Ui_OrderCard(object):
     """Сгенерированный класс, содержащий элементы дизайна карточки."""
 
     def setupUi(self, Form):
-        # ⚠️ Form должен быть экземпляром QWidget (OrderCardWidget)
         Form.setObjectName("Form")
         Form.resize(603, 164)
 
@@ -118,10 +117,6 @@ class Ui_OrderCard(object):
         self.label_delivery_date.setText(_translate("Form", "Дата доставки"))
 
 
-# =========================================================================
-# 2. КЛАСС ЛОГИКИ (OrderCardWidget)
-#    (Наследуется от QWidget и от сгенерированного UI)
-# =========================================================================
 
 class OrderCardWidget(QWidget, Ui_OrderCard):
     # Сигнал: испускается при клике (ID заказа, сам виджет)
@@ -130,7 +125,6 @@ class OrderCardWidget(QWidget, Ui_OrderCard):
     def __init__(self, order_data: dict, parent=None):
         super().__init__(parent)
 
-        # ⚠️ Вызываем setupUi из сгенерированного класса, чтобы создать все виджеты
         self.setupUi(self)
 
         # Сохраняем ID и заполняем данные

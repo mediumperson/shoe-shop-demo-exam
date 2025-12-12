@@ -24,7 +24,6 @@ class ApplicationController:
         if self.login_window:
             self.login_window.close()  # Закрываем окно логина при успешном входе
 
-        # ⚠️ Если есть старое окно продуктов, закрываем его
         if self.current_window:
             self.current_window.close()
 
@@ -35,8 +34,6 @@ class ApplicationController:
         # 1. Создаем новое окно ProductListWindow
         self.current_window = ProductListWindow(self.db_manager, self.current_user_role, self.current_user_name)
 
-        # 2. ⚠️ ПОДКЛЮЧЕНИЕ СИГНАЛА ВЫХОДА
-        # При выходе из ProductListWindow вызываем метод return_to_login
         self.current_window.logout_requested.connect(self.return_to_login)
 
         if self.current_window:
@@ -44,7 +41,6 @@ class ApplicationController:
             self.current_window.show()
 
     def return_to_login(self):
-        """Обрабатывает сигнал выхода и возвращает пользователя к окну входа."""
 
         # 1. Очищаем текущие данные пользователя и окно
         self.current_user_role = None

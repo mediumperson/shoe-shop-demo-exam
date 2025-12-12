@@ -365,7 +365,7 @@ class Database:
         query = """
             SELECT 
                 o.order_id, 
-                o.order_id AS order_code,  -- ⚠️ ИСПОЛЬЗУЕМ order_id КАК order_code
+                o.order_id AS order_code, 
                 o.order_status_id,       
                 o.order_pickup_point_id AS pvz_id, 
                 o.order_date, 
@@ -399,30 +399,8 @@ class Database:
             return None
 
     def add_new_order(self, data: dict) -> bool:
-        """
-        Добавляет новый заказ. order_code устанавливается равным order_id после вставки,
-        но для обхода NOT NULL мы временно устанавливаем order_code равным 0,
-        а затем обновляем его.
-
-        ИЛИ (Предпочтительный вариант):
-        Если order_code в БД можно временно сделать строкой, то можно было бы вставить
-        'TEMP' и сразу обновить.
-
-        Однако, лучший способ, не требующий изменения схемы, это:
-        Вставить все данные, кроме order_code, получить ID, и СРАЗУ же обновить order_code
-        в рамках ОДНОЙ транзакции.
-
-        Но поскольку NOT NULL не позволяет пропустить order_code,
-        мы должны передать временное значение, а потом его заменить.
-        """
         if self.cursor is None or self.conn is None:
             return False
-
-        # order_client_id=1 - заглушка
-
-        # 1. Запрос на вставку (временно передаем NULL, если бы NOT NULL не было)
-        # ⚠️ ПОСКОЛЬКУ order_code - NOT NULL, мы должны его включить в INSERT.
-        # ВРЕМЕННО передадим ему значение, а затем обновим его в той же транзакции.
 
         query_insert = """
             INSERT INTO "order" (
@@ -450,8 +428,6 @@ class Database:
             self.cursor.execute(query_insert, params_insert)
             new_order_id = self.cursor.fetchone()[0]
 
-            # 2. Обновляем order_code, присваивая ему значение order_id (числовое)
-            # ⚠️ Теперь мы обновляем order_code, используя полученный order_id
             query_update_code = """
                 UPDATE "order" SET order_code = %s WHERE order_id = %s;
             """
@@ -469,8 +445,6 @@ class Database:
         if self.cursor is None:
             return None
 
-        # ⚠️ Название последовательности обычно формируется как: <table>_<column>_seq
-        # В вашем случае это, вероятно, 'order_order_id_seq'
         sequence_name = 'order_order_id_seq'
 
         query = f"SELECT nextval('{sequence_name}');"
@@ -480,8 +454,6 @@ class Database:
             self.cursor.execute(query)
             next_id = self.cursor.fetchone()[0]
 
-            # Затем откатываем транзакцию, чтобы фактически не увеличивать счетчик,
-            # но сохранить его значение, которое будет использовано при INSERT.
             self.conn.rollback()
 
             return int(next_id)
@@ -497,7 +469,6 @@ class Database:
         if self.cursor is None or self.conn is None:
             return False
 
-        # ⚠️ УБИРАЕМ order_code из списка полей для обновления
         query = """
             UPDATE "order" SET
                 order_status_id = %s,
@@ -532,8 +503,6 @@ class Database:
         if self.cursor is None or self.conn is None:
             return False
 
-        # ⚠️ В реальной системе перед удалением самого заказа нужно удалить
-        # все связанные с ним записи из таблицы "order_product" (если она есть)
 
         query = "DELETE FROM \"order\" WHERE order_id = %s;"
 
@@ -546,15 +515,9 @@ class Database:
             QMessageBox.critical(None, "Ошибка SQL", f"Ошибка при удалении заказа #{order_id}: {e}")
             return False
 
-    # --------------------------------------------------------------------
-    # СУЩЕСТВУЮЩИЙ МЕТОД get_all_orders (обновлен для форматирования)
-    # --------------------------------------------------------------------
 
     def get_all_orders(self) -> list:
-        """
-        Получает список всех заказов, используя точные названия таблиц из ER-диаграммы:
-        order, order_status, pickup_point, user_account.
-        """
+
         if self.cursor is None:
             return []
 

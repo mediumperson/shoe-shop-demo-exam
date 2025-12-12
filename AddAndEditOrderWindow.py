@@ -4,8 +4,6 @@ from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import QDialog, QMessageBox
 from PyQt6.QtGui import QIntValidator, QDoubleValidator, QIcon
 
-# Импорт вашего сгенерированного UI-класса
-# ⚠️ Убедитесь, что имя файла соответствует вашему сгенерированному файлу
 from order_add_editui import Ui_order_edit
 
 
@@ -81,9 +79,6 @@ class AddEditOrderWindow(QDialog, Ui_order_edit):
         except Exception as e:
             QMessageBox.critical(self, "Ошибка БД", f"Не удалось загрузить адреса ПВЗ: {e}")
 
-    # --------------------------------------------------------------------
-    # РЕДАКТИРОВАНИЕ (Загрузка)
-    # --------------------------------------------------------------------
 
     def load_order_data(self):
         """Загрузка данных существующего заказа для режима 'edit'."""
@@ -100,7 +95,6 @@ class AddEditOrderWindow(QDialog, Ui_order_edit):
             self.close()
             return
 
-        # ⚠️ Заполнение полей:
 
         # QLineEdit: ИСПРАВЛЕНИЕ ОШИБКИ - Преобразование order_code в строку
         order_code_value = order_data.get('order_code')
@@ -167,12 +161,10 @@ class AddEditOrderWindow(QDialog, Ui_order_edit):
         success = False
         try:
             if self.mode == 'add':
-                # ⚠️ В add_new_order мы не передаем 'order_code'
                 success = self.db_manager.add_new_order(data)
                 if success:
                     QMessageBox.information(self, "Успех", "Заказ успешно добавлен!")
             else:  # mode == 'edit'
-                # ⚠️ В update_order мы передаем order_id и данные
                 success = self.db_manager.update_order(self.order_id, data)
                 if success:
                     QMessageBox.information(self, "Успех", f"Заказ #{self.order_id} успешно обновлен!")
