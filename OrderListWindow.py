@@ -2,8 +2,12 @@ from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import QMainWindow, QDialog, QMessageBox, QWidget, QVBoxLayout
 from PyQt6.QtGui import QColor
 
+# Импорт UI основного окна
 from dialog_order_ui import Ui_MainWindow
+# Импорт кастомного виджета карточки заказа
 from OrderCardWidget import OrderCardWidget
+# ⚠️ Новый импорт для окна добавления/редактирования
+from AddAndEditOrderWindow import AddEditOrderWindow
 
 
 class OrderListWindow(QMainWindow, Ui_MainWindow):
@@ -12,13 +16,14 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
     # Переменные для отслеживания выбранного заказа
     selected_order_widget: QWidget | None = None
     selected_order_id: int | None = None
+    # Переменная для хранения ссылки на окно добавления/редактирования
+    add_edit_order_window: QDialog | None = None
 
     def __init__(self, database, user_data: dict, parent=None):
         # ⚠️ Наследуемся от QMainWindow, чтобы соответствовать UI
         super().__init__(parent)
         self.db_manager = database
         self.user_data = user_data
-        self.add_edit_order_window = None
 
         self.setupUi(self)
 
@@ -84,6 +89,11 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
 
     def load_orders(self):
         """Загружает список заказов из БД и отображает их."""
+
+        # ⚠️ КРИТИЧЕСКОЕ ИЗМЕНЕНИЕ: Сброс выбранного состояния перед очисткой списка
+        self.selected_order_widget = None
+        self.selected_order_id = None
+
         self.clear_order_list()
 
         try:
@@ -120,13 +130,14 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
         Обрабатывает клик по виджету заказа: выделение или открытие деталей.
         """
 
-        # 1. Проверка на повторный клик (открытие редактирования / снятие выделения)
+        # 1. Проверка на повторный клик (открытие редактирования)
         if clicked_widget == self.selected_order_widget:
+            # Снятие выделения
             clicked_widget.set_selected(False)
             self.selected_order_widget = None
             self.selected_order_id = None
 
-            # Открытие окна редактирования по двойному клику
+            # Открытие окна редактирования по "двойному клику"
             self.open_edit_order_screen(order_id)
             return
 
@@ -141,23 +152,40 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
         self.selected_order_widget = clicked_widget
         self.selected_order_id = order_id
 
+    # ----------------------------------------------------
+    # ⚠️ ФУНКЦИОНАЛ ДОБАВЛЕНИЯ/РЕДАКТИРОВАНИЯ
+    # ----------------------------------------------------
+
     def open_add_order_screen(self):
         """Открытие окна для создания нового заказа."""
-        # ⚠️ Здесь должна быть логика открытия окна AddOrderWindow
-        QMessageBox.information(self, "Функционал", "Открытие окна добавления заказа.")
-        # if self.add_edit_order_window is None:
-        #     self.add_edit_order_window = AddEditOrderWindow(self.db_manager, mode='add')
-        #     self.add_edit_order_window.data_saved.connect(self.load_orders)
-        # self.add_edit_order_window.show()
+
+        # Создаем новое диалоговое окно для добавления
+        self.add_edit_order_window = AddEditOrderWindow(
+            database=self.db_manager,
+            mode='add',
+            parent=self  # Устанавливаем родителя, чтобы окно было модальным
+        )
+        # Подключаем сигнал data_saved к перезагрузке списка
+        self.add_edit_order_window.data_saved.connect(self.load_orders)
+
+        # Отображаем как модальное окно (блокирует основное)
+        self.add_edit_order_window.exec()
 
     def open_edit_order_screen(self, order_id: int):
         """Открытие окна для редактирования существующего заказа."""
-        # ⚠️ Здесь должна быть логика открытия окна AddEditOrderWindow
-        QMessageBox.information(self, "Функционал", f"Открытие окна редактирования заказа #{order_id}.")
-        # if self.add_edit_order_window is None:
-        #     self.add_edit_order_window = AddEditOrderWindow(self.db_manager, mode='edit', order_id=order_id)
-        #     self.add_edit_order_window.data_saved.connect(self.load_orders)
-        # self.add_edit_order_window.show()
+
+        # Создаем новое диалоговое окно для редактирования
+        self.add_edit_order_window = AddEditOrderWindow(
+            database=self.db_manager,
+            mode='edit',
+            order_id=order_id,
+            parent=self
+        )
+        # Подключаем сигнал data_saved к перезагрузке списка
+        self.add_edit_order_window.data_saved.connect(self.load_orders)
+
+        # Отображаем как модальное окно
+        self.add_edit_order_window.exec()
 
     def handle_remove_order(self):
         """Удаление выбранного заказа."""
@@ -172,8 +200,14 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
 
         if reply == QMessageBox.StandardButton.Yes:
             try:
+                # ⚠️ Вызов метода БД для удаления
                 if self.db_manager.delete_order_by_id(self.selected_order_id):
                     QMessageBox.information(self, "Успех", f"Заказ #{self.selected_order_id} успешно удален!")
+
+                    # ❗ Сброс ссылок, чтобы предотвратить ошибку при следующем клике
+                    self.selected_order_widget = None
+                    self.selected_order_id = None
+
                     self.load_orders()  # Перезагрузка списка
                 else:
                     QMessageBox.warning(self, "Предупреждение",
