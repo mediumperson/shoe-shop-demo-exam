@@ -47,7 +47,7 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
         self.add_product.hide()
         self.label_2.setText(username)
 
-        if self.current_user_role == 1 or 4:
+        if self.current_user_role == 1:
             self.search.show()
             self.label.show()
             self.dillers.show()
@@ -164,40 +164,41 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
 
     def open_edit_product_screen(self, article: str):
         # 1. Получаем данные товара из БД
-        product_data = self.db_manager.get_product_by_article(article)
+        if self.current_user_role == 1:
+            product_data = self.db_manager.get_product_by_article(article)
 
-        if not product_data:
-            QMessageBox.critical(self, "Ошибка", f"Товар с артикулом {article} не найден в базе данных.")
-            return
+            if not product_data:
+                QMessageBox.critical(self, "Ошибка", f"Товар с артикулом {article} не найден в базе данных.")
+                return
 
-        if self.edit_window:
-            self.edit_window.product_added.disconnect()
-            self.edit_window.close()
-            self.edit_window.deleteLater()
-            self.edit_window = None
+            if self.edit_window:
+                self.edit_window.product_added.disconnect()
+                self.edit_window.close()
+                self.edit_window.deleteLater()
+                self.edit_window = None
 
-        # 3. Создание окна редактирования
-        self.edit_window = AddProductWindow(self.db_manager)
+            # 3. Создание окна редактирования
+            self.edit_window = AddProductWindow(self.db_manager)
 
-        # 4. Загрузка данных в форму (ключевой шаг)
-        self.edit_window.load_product_data(product_data)
+            # 4. Загрузка данных в форму (ключевой шаг)
+            self.edit_window.load_product_data(product_data)
 
-        # 5. Подключение сигнала для обновления списка после сохранения
-        try:
-            self.edit_window.product_added.connect(self.load_products)
-        except Exception as e:
-            print(f"Ошибка подключения сигнала (edit_product): {e}")
+            # 5. Подключение сигнала для обновления списка после сохранения
+            try:
+                self.edit_window.product_added.connect(self.load_products)
+            except Exception as e:
+                print(f"Ошибка подключения сигнала (edit_product): {e}")
 
-        try:
-            self.edit_window.finished.connect(self.handle_edit_window_close_unselect)
+            try:
+                self.edit_window.finished.connect(self.handle_edit_window_close_unselect)
 
-        except Exception as e:
-            print(f"Ошибка подключения finished: {e}")
-        # 6. Настройка и отображение окна
-        self.edit_window.setWindowFlag(QtCore.Qt.WindowType.Window)
-        self.edit_window.setParent(None)
-        self.edit_window.show()
-        self.edit_window.activateWindow()
+            except Exception as e:
+                print(f"Ошибка подключения finished: {e}")
+            # 6. Настройка и отображение окна
+            self.edit_window.setWindowFlag(QtCore.Qt.WindowType.Window)
+            self.edit_window.setParent(None)
+            self.edit_window.show()
+            self.edit_window.activateWindow()
 
     def connect_signals(self):
         self.exit_product_list.clicked.connect(self.logout_requested)
