@@ -1,7 +1,7 @@
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import QMainWindow, QWidget, QMessageBox
-from PyQt6.QtGui import QColor
-from product_list_administrator_ui import ProductListAdministratorWindow
+from PyQt6.QtGui import QColor, QIcon
+from product_list_administrator import Ui_ProductListAdministratorWindow
 from AddAndEditProductLogic import AddProductWindow
 from ProductCardWidget import ProductCardWidget
 from OrderListWindow import OrderListWindow
@@ -10,8 +10,9 @@ IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'
 
 
 
-class ProductListWindow(QMainWindow, ProductListAdministratorWindow):
+class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
     product_selection_changed = QtCore.pyqtSignal(str)
+    logout_requested = QtCore.pyqtSignal()
     COLOR_OUT_OF_STOCK = QColor(173, 216, 230)
     SELECTION_STYLE_COLOR = "'#00FA9A'"
 
@@ -26,7 +27,8 @@ class ProductListWindow(QMainWindow, ProductListAdministratorWindow):
         self.selected_card_widget = None
         self.selected_card_article = None
         self.current_user_role = user_role
-        print(self.current_user_role)
+        self.setWindowTitle(f"Каталог товаров")
+        self.setWindowIcon(QIcon('C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images\\Icon.png'))
         self.setupUi(self)
         self.load_suppliers()
         self.verticalLayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
@@ -74,7 +76,6 @@ class ProductListWindow(QMainWindow, ProductListAdministratorWindow):
         # 1. ПОВТОРНЫЙ КЛИК (Редактирование)
         # Проверяем, совпадает ли кликнутый виджет с текущим выделенным
         if clicked_widget == self.selected_card_widget:
-            print(f"Повторный клик по {article}: Открываем редактирование.")
 
             # Снимаем выделение
             clicked_widget.set_selected(False)
@@ -86,7 +87,6 @@ class ProductListWindow(QMainWindow, ProductListAdministratorWindow):
 
         # 2. ОДИНОЧНЫЙ/НОВЫЙ КЛИК (Выделение)
         else:
-            print(f"Новый клик по {article}: Выделяем.")
 
             # Снимаем выделение с предыдущей карточки (если она была)
             if self.selected_card_widget:
@@ -116,7 +116,8 @@ class ProductListWindow(QMainWindow, ProductListAdministratorWindow):
         # 4. Настройка и отображение окна
         self.add_window.setWindowFlag(QtCore.Qt.WindowType.Window)
         self.add_window.setParent(None)
-        self.add_window.setWindowTitle("Добавление нового товара")
+        self.add_window.setWindowIcon(QIcon('C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images\\Icon.png'))
+        self.add_window.setWindowTitle("Добавление товара")
         self.add_window.show()
         self.add_window.activateWindow()
 
@@ -162,6 +163,11 @@ class ProductListWindow(QMainWindow, ProductListAdministratorWindow):
             else:
                 pass
 
+    def request_logout(self):
+        """Испускает сигнал для главного цикла о необходимости вернуться к логину."""
+        self.logout_requested.emit()
+        self.close()
+
     def open_edit_product_screen(self, article: str):
         # 1. Получаем данные товара из БД
         product_data = self.db_manager.get_product_by_article(article)
@@ -200,7 +206,7 @@ class ProductListWindow(QMainWindow, ProductListAdministratorWindow):
         self.edit_window.activateWindow()
 
     def connect_signals(self):
-        self.exit_product_list.clicked.connect(self.close)
+        self.exit_product_list.clicked.connect(self.logout_requested)
         self.add_product.clicked.connect(self.open_add_product_screen)
         self.remove_product.clicked.connect(self.handle_delete_product)
         self.orders.clicked.connect(self.open_orders_screen)
@@ -285,7 +291,6 @@ class ProductListWindow(QMainWindow, ProductListAdministratorWindow):
         user_data = {'role': self.current_user_role}
 
         if not hasattr(self, 'orders_window') or self.orders_window is None:
-            # ⚠️ ИСПРАВЛЕНИЕ: Создаем OrderListWindow, передавая БД, данные пользователя и родителя
             self.orders_window = OrderListWindow(
                 database=self.db_manager,
                 user_data=user_data,

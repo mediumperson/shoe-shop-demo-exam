@@ -2,7 +2,7 @@ import os
 import shutil
 
 from PyQt6 import QtCore
-from PyQt6.QtGui import QPixmap, QCloseEvent
+from PyQt6.QtGui import QPixmap, QCloseEvent, QIcon
 from PyQt6.QtWidgets import QDialog, QMessageBox, QFileDialog
 
 from product_add_edit_ui import Ui_Dialog
@@ -40,6 +40,7 @@ class AddProductWindow(QDialog, Ui_Dialog):
         self.is_editing = True
         self.current_article = product_data.get('product_article')
 
+        self.setWindowIcon(QIcon('C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images\\Icon.png'))
         self.setWindowTitle(f"Редактирование: {self.current_article}")
 
         self.articul_input.setText(self.current_article)
@@ -115,19 +116,14 @@ class AddProductWindow(QDialog, Ui_Dialog):
 
         if self.is_editing and self.old_photo_path and self.old_photo_path != destination_path:
             if os.path.exists(self.old_photo_path):
-                try:
                     # [cite_start]os.remove(self.old_photo.path) [cite: 1] (исправленный синтаксис)
-                    os.remove(self.old_photo_path)
-                    print(f"Старый файл удален: {self.old_photo_path}")
-                except Exception as e:
-                    print(f"Предупреждение: Не удалось удалить старый файл {self.old_photo_path}: {e}")
+                os.remove(self.old_photo_path)
                     # Не блокируем операцию, так как копирование может быть успешным
 
         # 2. Копирование нового фото
         try:
             # [cite_start]shutil.cooyooneshoto, path, [cite: 10] (используем shutil.copy2)
             shutil.copy2(self.new_photo_path, destination_path)
-            print(f"Файл успешно скопирован в: {destination_path}")
 
             # Сбрасываем new_photo_path, чтобы при повторном сохранении не копировать файл снова
             self.new_photo_path = None

@@ -1,3 +1,5 @@
+# main.py (Обновленный ApplicationController)
+
 import sys
 from PyQt6.QtWidgets import QApplication, QMessageBox
 
@@ -20,28 +22,49 @@ class ApplicationController:
 
     def open_product_list(self, user_role, username):
         if self.login_window:
-            self.login_window.close()
+            self.login_window.close()  # Закрываем окно логина при успешном входе
+
+        # ⚠️ Если есть старое окно продуктов, закрываем его
+        if self.current_window:
+            self.current_window.close()
 
         self.current_window = None
         self.current_user_role = user_role
         self.current_user_name = username
 
+        # 1. Создаем новое окно ProductListWindow
         self.current_window = ProductListWindow(self.db_manager, self.current_user_role, self.current_user_name)
+
+        # 2. ⚠️ ПОДКЛЮЧЕНИЕ СИГНАЛА ВЫХОДА
+        # При выходе из ProductListWindow вызываем метод return_to_login
+        self.current_window.logout_requested.connect(self.return_to_login)
 
         if self.current_window:
             self.current_window.setWindowTitle(f"Список товаров (Пользователь: {username}, Роль: {user_role})")
             self.current_window.show()
 
+    def return_to_login(self):
+        """Обрабатывает сигнал выхода и возвращает пользователя к окну входа."""
+
+        # 1. Очищаем текущие данные пользователя и окно
+        self.current_user_role = None
+        self.current_user_name = None
+        self.current_window = None
+
+        # 2. Создаем/показываем новое окно логина
+        self.login_window = LoginWindow(self.db_manager, self)
+        self.login_window.show()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
-#    background-color: white;
-#    color: black; для белой темы сунуть внутрь Qwidget
+    #    background-color: white;
+    #    color: black; для белой темы сунуть внутрь Qwidget
     app.setStyleSheet("""
     QWidget {
     background-color: white;
-    color: black; для белой темы сунуть внутрь Qwidget
+    color: black; /* Убрал комментарий, так как он не должен быть внутри строки */
     font-family: "Times New Roman", Times, serif;
     font-size: 15px;
 }

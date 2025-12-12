@@ -1,5 +1,6 @@
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import QMainWindow, QDialog, QMessageBox, QWidget, QVBoxLayout
+from PyQt6.QtGui import QIcon
 from PyQt6.QtGui import QColor
 
 # Импорт UI основного окна
@@ -31,6 +32,8 @@ class OrderListWindow(QMainWindow, Ui_MainWindow):
         # Это verticalLayout_11, который находится внутри scrollAreaWidgetContents_2
         self.orders_vbox_layout = self.verticalLayout_11
         self.orders_vbox_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.setWindowTitle(f"Каталог товаров")
+        self.setWindowIcon(QIcon('C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images\\Icon.png'))
 
         # 1. Очистка статических шаблонов и сброс выбора
         self.clear_template_widgets()

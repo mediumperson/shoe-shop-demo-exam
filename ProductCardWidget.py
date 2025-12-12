@@ -109,7 +109,6 @@ class ProductCardWidget(QWidget, Ui_Form):
 
             # 1. Обработка ДВОЙНОГО КЛИКА
             if event.type() == QtCore.QEvent.Type.MouseButtonDblClick:
-                print(f"ДВОЙНОЙ КЛИК: Редактирование товара {self.article}")
                 self.product_clicked.emit(self.article, self)
 
             # 2. Обработка ОДИНОЧНОГО КЛИКА

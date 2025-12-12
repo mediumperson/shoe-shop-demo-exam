@@ -20,7 +20,6 @@ class Database:
         try:
             self.conn = psycopg2.connect(**self.conn_params)
             self.cursor = self.conn.cursor()
-            print("Соединение с БД установлено.")
         except Exception as e:
             QMessageBox.critical(None, "Ошибка БД", f"Не удалось подключиться к базе данных: {e}")
 
@@ -160,7 +159,6 @@ class Database:
         except Exception as e:
             if self.conn:
                 self.conn.rollback()
-            print(f"Ошибка поиска товара: {e}")
             return None
 
     def add_product(self, data: dict) -> bool:
@@ -291,7 +289,6 @@ class Database:
 
         except Exception as e:
             self.conn.rollback()
-            print(f"Ошибка работы с таблицей {table_name}: {e}")
             return None
 
     def get_id_for_product_fields(self, data):
@@ -606,13 +603,9 @@ class Database:
             return orders
 
         except Exception as e:
-            print(f"DEBUG (Database): Критическая ошибка при получении списка заказов: {e}")
             return []
 
     def close(self):
         if self.conn:
-            try:
-                self.cursor.close()
-                self.conn.close()
-            except Exception as e:
-                print(f"Ошибка при закрытии соединения: {e}")
+            self.cursor.close()
+            self.conn.close()

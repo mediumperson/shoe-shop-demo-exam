@@ -7,7 +7,7 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLineEdit, QPushButton, QLabel
+
 
 class Ui_Login(object):
     def setupUi(self, Login):
@@ -20,7 +20,7 @@ class Ui_Login(object):
         self.label.setGeometry(QtCore.QRect(140, 20, 171, 141))
         self.label.setStyleSheet("")
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("../import/Icon.JPG"))
+        self.label.setPixmap(QtGui.QPixmap("images/Icon.JPG"))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(parent=self.centralwidget)
@@ -120,7 +120,7 @@ class Ui_Login(object):
         self.verticalLayout_3.addLayout(self.verticalLayout_2)
         Login.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=Login)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 452, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 452, 33))
         self.menubar.setObjectName("menubar")
         Login.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(parent=Login)
@@ -139,32 +139,6 @@ class Ui_Login(object):
         self.login_button.setText(_translate("Login", "Войти"))
         self.label_3.setText(_translate("Login", "ИЛИ"))
         self.guest_button.setText(_translate("Login", "Войти как гость"))
-
-
-class LoginWindow(QMainWindow, Ui_Login):
-
-
-    def __init__(self, db_manager, app_controller, parent=None):
-        super().__init__(parent)
-        self.setupUi(self)
-        self.db_manager = db_manager
-        self.app_controller = app_controller
-
-        self.login_button.clicked.connect(self.handle_login)
-        # self.guest_button.clicked.connect(self.handle_guest_login)
-
-
-    def handle_login(self):
-        login = self.login_input.text()
-        password = self.password_input.text()
-
-        user_role, message = self.db_manager.get_user(login, password)
-
-        self.status_label.setText(message)
-
-        if user_role:
-            self.app_controller.open_product_list(user_role, login)
-            self.close()
 
 
 if __name__ == "__main__":

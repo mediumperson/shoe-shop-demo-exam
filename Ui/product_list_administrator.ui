@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>ProductListAdministratorWindow</class>
+ <widget class="QMainWindow" name="ProductListAdministratorWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1067</width>
-    <height>772</height>
+    <width>975</width>
+    <height>605</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -27,7 +27,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="2" column="0">
+    <item row="4" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QPushButton" name="exit_product_list">
@@ -60,7 +60,7 @@ QPushButton#exit_product_list:hover {
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -162,44 +162,32 @@ QPushButton#add_product:hover {
       </item>
      </layout>
     </item>
-    <item row="0" column="0">
+    <item row="1" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLabel" name="label_3">
-        <property name="minimumSize">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
          <size>
-          <width>60</width>
-          <height>50</height>
+          <width>40</width>
+          <height>20</height>
          </size>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>50</height>
-         </size>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::Box</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="pixmap">
-         <pixmap>import/Icon.png</pixmap>
-        </property>
-        <property name="scaledContents">
-         <bool>true</bool>
-        </property>
-       </widget>
+       </spacer>
       </item>
       <item>
        <widget class="QLineEdit" name="search">
-        <property name="maximumSize">
+        <property name="minimumSize">
          <size>
           <width>150</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>121212</width>
           <height>50</height>
          </size>
         </property>
@@ -237,10 +225,10 @@ QLineEdit#search:focus {
          </size>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Box</enum>
+         <enum>QFrame::Shape::Box</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
+         <enum>QFrame::Shadow::Raised</enum>
         </property>
         <property name="text">
          <string>Поставщик:</string>
@@ -249,6 +237,12 @@ QLineEdit#search:focus {
       </item>
       <item>
        <widget class="QComboBox" name="dillers">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -288,10 +282,10 @@ QComboBox#dillers:focus {
          </size>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Box</enum>
+         <enum>QFrame::Shape::Box</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
+         <enum>QFrame::Shadow::Raised</enum>
         </property>
         <property name="text">
          <string>Количество на складе:</string>
@@ -300,6 +294,12 @@ QComboBox#dillers:focus {
       </item>
       <item>
        <widget class="QComboBox" name="storage">
+        <property name="minimumSize">
+         <size>
+          <width>130</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -336,30 +336,33 @@ QComboBox#storage:focus {
        <widget class="QLabel" name="label_2">
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>175</width>
           <height>50</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>16777215</width>
+          <width>175</width>
           <height>50</height>
          </size>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Box</enum>
+         <enum>QFrame::Shape::Box</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
+         <enum>QFrame::Shadow::Raised</enum>
         </property>
         <property name="text">
          <string>Фамилия Имя Отчество</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
         </property>
        </widget>
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
+    <item row="3" column="0">
      <widget class="QScrollArea" name="scrollArea">
       <property name="widgetResizable">
        <bool>true</bool>
@@ -369,8 +372,8 @@ QComboBox#storage:focus {
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1043</width>
-         <height>604</height>
+         <width>953</width>
+         <height>434</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -415,7 +418,7 @@ QLabel#product_photo:hover {
 }</string>
                       </property>
                       <property name="frameShape">
-                       <enum>QFrame::Box</enum>
+                       <enum>QFrame::Shape::Box</enum>
                       </property>
                       <property name="text">
                        <string/>
@@ -433,7 +436,7 @@ QLabel#product_photo:hover {
                   <item>
                    <layout class="QGridLayout" name="sale_layout_5">
                     <property name="sizeConstraint">
-                     <enum>QLayout::SetDefaultConstraint</enum>
+                     <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                     </property>
                     <item row="1" column="1">
                      <widget class="QLabel" name="sale_5">
@@ -444,7 +447,7 @@ QLabel#product_photo:hover {
                        </sizepolicy>
                       </property>
                       <property name="layoutDirection">
-                       <enum>Qt::LeftToRight</enum>
+                       <enum>Qt::LayoutDirection::LeftToRight</enum>
                       </property>
                       <property name="styleSheet">
                        <string notr="true">QLabel#sale_5{
@@ -456,13 +459,13 @@ QLabel#sale_5:hover {
 }</string>
                       </property>
                       <property name="frameShape">
-                       <enum>QFrame::Box</enum>
+                       <enum>QFrame::Shape::Box</enum>
                       </property>
                       <property name="text">
                        <string>Действущая скидка</string>
                       </property>
                       <property name="alignment">
-                       <set>Qt::AlignCenter</set>
+                       <set>Qt::AlignmentFlag::AlignCenter</set>
                       </property>
                      </widget>
                     </item>
@@ -488,7 +491,7 @@ QWidget#widget_product:hover {
                             </sizepolicy>
                            </property>
                            <property name="frameShape">
-                            <enum>QFrame::NoFrame</enum>
+                            <enum>QFrame::Shape::NoFrame</enum>
                            </property>
                            <property name="text">
                             <string>Категория товара | Наименование товара</string>
@@ -506,7 +509,7 @@ QWidget#widget_product:hover {
                               </sizepolicy>
                              </property>
                              <property name="frameShape">
-                              <enum>QFrame::NoFrame</enum>
+                              <enum>QFrame::Shape::NoFrame</enum>
                              </property>
                              <property name="text">
                               <string>Описание товара: *описание*</string>
@@ -526,7 +529,7 @@ QWidget#widget_product:hover {
                               </sizepolicy>
                              </property>
                              <property name="frameShape">
-                              <enum>QFrame::NoFrame</enum>
+                              <enum>QFrame::Shape::NoFrame</enum>
                              </property>
                              <property name="text">
                               <string>Производитель: *производитель*</string>
@@ -546,7 +549,7 @@ QWidget#widget_product:hover {
                               </sizepolicy>
                              </property>
                              <property name="frameShape">
-                              <enum>QFrame::NoFrame</enum>
+                              <enum>QFrame::Shape::NoFrame</enum>
                              </property>
                              <property name="text">
                               <string>Поставщик: *поставщик*</string>
@@ -566,7 +569,7 @@ QWidget#widget_product:hover {
                               </sizepolicy>
                              </property>
                              <property name="frameShape">
-                              <enum>QFrame::NoFrame</enum>
+                              <enum>QFrame::Shape::NoFrame</enum>
                              </property>
                              <property name="text">
                               <string>Цена: *цена*</string>
@@ -586,7 +589,7 @@ QWidget#widget_product:hover {
                               </sizepolicy>
                              </property>
                              <property name="frameShape">
-                              <enum>QFrame::NoFrame</enum>
+                              <enum>QFrame::Shape::NoFrame</enum>
                              </property>
                              <property name="text">
                               <string>Единица измерения: *шт*</string>
@@ -606,7 +609,7 @@ QWidget#widget_product:hover {
                               </sizepolicy>
                              </property>
                              <property name="frameShape">
-                              <enum>QFrame::NoFrame</enum>
+                              <enum>QFrame::Shape::NoFrame</enum>
                              </property>
                              <property name="text">
                               <string>Количество на складе: *кол-во*</string>
@@ -643,8 +646,8 @@ QWidget#widget_product:hover {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1067</width>
-     <height>26</height>
+     <width>975</width>
+     <height>33</height>
     </rect>
    </property>
   </widget>

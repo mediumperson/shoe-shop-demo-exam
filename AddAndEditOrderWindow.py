@@ -2,7 +2,7 @@
 
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import QDialog, QMessageBox
-from PyQt6.QtGui import QIntValidator, QDoubleValidator
+from PyQt6.QtGui import QIntValidator, QDoubleValidator, QIcon
 
 # Импорт вашего сгенерированного UI-класса
 # ⚠️ Убедитесь, что имя файла соответствует вашему сгенерированному файлу
@@ -18,8 +18,8 @@ class AddEditOrderWindow(QDialog, Ui_order_edit):
         self.db_manager = database
         self.mode = mode  # 'add' или 'edit'
         self.order_id = order_id
-
-        # ⚠️ Использование вашего сгенерированного класса
+        self.setWindowTitle(f"Список заказов")
+        self.setWindowIcon(QIcon('C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images\\Icon.png'))
         self.setupUi(self)
 
         self.setup_window()
