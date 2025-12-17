@@ -1,11 +1,11 @@
 # main.py (Обновленный ApplicationController)
 
 import sys
-from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtWidgets import QApplication
 
-from database import Database
-from LoginWindow import LoginWindow
-from ProductListWindow import ProductListWindow
+from Logic.database import Database
+from Logic.LoginWindow import LoginWindow
+from Logic.ProductListWindow import ProductListWindow
 
 
 class ApplicationController:
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     app.setStyleSheet("""
     QWidget {
     background-color: white;
-    color: black; /* Убрал комментарий, так как он не должен быть внутри строки */
+    color: black;
     font-family: "Times New Roman", Times, serif;
     font-size: 15px;
 }

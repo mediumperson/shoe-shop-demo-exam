@@ -5,7 +5,7 @@ from PyQt6 import QtCore
 from PyQt6.QtGui import QPixmap, QCloseEvent, QIcon
 from PyQt6.QtWidgets import QDialog, QMessageBox, QFileDialog
 
-from product_add_edit_ui import Ui_Dialog
+from Ui_python.product_add_edit_ui import Ui_Dialog
 IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'
 
 class AddProductWindow(QDialog, Ui_Dialog):
@@ -20,7 +20,6 @@ class AddProductWindow(QDialog, Ui_Dialog):
         self.db_manager = database_manager
         self.is_editing = False
         self.current_article = None
-
 
         self.old_photo_path = None
         self.new_photo_path = None

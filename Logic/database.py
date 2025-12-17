@@ -240,23 +240,37 @@ class Database:
             return False
 
     def delete_product_by_article(self, article: str) -> bool:
-        # (Опущен для краткости, остался без изменений)
         if self.cursor is None:
-            QMessageBox.critical(None, "Ошибка БД", "Курсор не инициализирован для записи.")
+            QMessageBox.critical(None, "Ошибка БД", "Курсор не инициализирован.")
             return False
 
         if not article:
             return False
 
-        query = "DELETE FROM product WHERE product_article = %s"
-
         try:
-            self.cursor.execute(query, (article,))
+            # 1. Проверяем, есть ли товар в заказах
+            check_query = "SELECT COUNT(*) FROM order_product WHERE product_article = %s"
+            self.cursor.execute(check_query, (article,))
+            count = self.cursor.fetchone()[0]
+
+            if count > 0:
+                QMessageBox.warning(
+                    None,
+                    "Запрет удаления",
+                    f"Невозможно удалить товар {article}, так как он числится в {count} заказах.\n"
+                    "Сначала удалите товар из заказов или удалите сами заказы."
+                )
+                return False
+
+            # 2. Если товара нет в заказах, удаляем
+            delete_query = "DELETE FROM product WHERE product_article = %s"
+            self.cursor.execute(delete_query, (article,))
             self.conn.commit()
             return True
 
         except Exception as e:
-            self.conn.rollback()
+            if self.conn:
+                self.conn.rollback()
             QMessageBox.critical(None, "Ошибка SQL", f"Ошибка при удалении товара: {e}")
             return False
 
@@ -358,44 +372,38 @@ class Database:
             return []
 
     def get_order_by_id(self, order_id: int) -> dict | None:
-        """Получает полные данные одного заказа по его ID."""
         if self.cursor is None:
             return None
 
         query = """
             SELECT 
                 o.order_id, 
-                o.order_id AS order_code, 
+                o.order_code, 
                 o.order_status_id,       
                 o.order_pickup_point_id AS pvz_id, 
                 o.order_date, 
-                o.order_delivery_date
-            FROM 
-                "order" o
-            WHERE
-                o.order_id = %s;
+                o.order_delivery_date,
+                -- Генерируем строку артикулов и количества для отображения в поле "Артикул"
+                COALESCE(STRING_AGG(op.product_article || ', ' || op.count || '', ', '), 'Нет товаров') AS product_details
+            FROM "order" o
+            LEFT JOIN order_product op ON o.order_id = op.order_id
+            WHERE o.order_id = %s
+            GROUP BY o.order_id, o.order_code, o.order_status_id, o.order_pickup_point_id, o.order_date, o.order_delivery_date;
         """
         try:
             self.cursor.execute(query, (order_id,))
             row = self.cursor.fetchone()
-
             if row:
                 columns = [desc[0] for desc in self.cursor.description]
                 data = dict(zip(columns, row))
 
-                # Форматирование дат для корректного отображения в QDateEdit
-                if data.get('order_date'):
-                    # Преобразование datetime/date в строку 'yyyy-MM-dd'
-                    data['order_date'] = data['order_date'].strftime('%Y-%m-%d')
-
-                if data.get('order_delivery_date'):
-                    data['order_delivery_date'] = data['order_delivery_date'].strftime('%Y-%m-%d')
-
+                for key in ['order_date', 'order_delivery_date']:
+                    if data.get(key) and not isinstance(data[key], str):
+                        data[key] = data[key].strftime('%Y-%m-%d')
                 return data
             return None
-
         except Exception as e:
-            QMessageBox.critical(None, "Ошибка БД", f"Ошибка при получении данных заказа #{order_id}: {e}")
+            print(f"Ошибка получения заказа по ID: {e}")
             return None
 
     def add_new_order(self, data: dict) -> bool:
@@ -409,8 +417,8 @@ class Database:
                 order_date,
                 order_delivery_date,
                 order_client_id,
-                order_code                -- ⚠️ Добавляем order_code в INSERT
-            ) VALUES (%s, %s, %s, %s, 1, 0) -- ⚠️ Временно присваиваем 0, чтобы обойти NOT NULL
+                order_code
+            ) VALUES (%s, %s, %s, %s, 1, 0)
             RETURNING order_id;
         """
 
@@ -465,9 +473,7 @@ class Database:
             return None
 
     def update_order(self, order_id: int, data: dict) -> bool:
-        """Обновляет существующий заказ (за исключением order_code)."""
-        if self.cursor is None or self.conn is None:
-            return False
+        if self.cursor is None: return False
 
         query = """
             UPDATE "order" SET
@@ -477,25 +483,17 @@ class Database:
                 order_delivery_date = %s
             WHERE order_id = %s;
         """
-
-        order_date_obj = datetime.strptime(data['order_date'], '%Y-%m-%d').date()
-        delivery_date_obj = datetime.strptime(data['order_delivery_date'], '%Y-%m-%d').date()
-
-        params = (
-            data['status_id'],
-            data['pvz_id'],
-            order_date_obj,
-            delivery_date_obj,
-            order_id  # WHERE clause
-        )
-
         try:
+            params = (
+                data['status_id'], data['pvz_id'],
+                data['order_date'], data['order_delivery_date'],
+                order_id
+            )
             self.cursor.execute(query, params)
             self.conn.commit()
             return self.cursor.rowcount > 0
         except Exception as e:
             self.conn.rollback()
-            QMessageBox.critical(None, "Ошибка SQL", f"Ошибка при обновлении заказа #{order_id}: {e}")
             return False
 
     def delete_order_by_id(self, order_id: int) -> bool:
@@ -515,21 +513,21 @@ class Database:
             QMessageBox.critical(None, "Ошибка SQL", f"Ошибка при удалении заказа #{order_id}: {e}")
             return False
 
-
     def get_all_orders(self) -> list:
-
         if self.cursor is None:
             return []
 
         query = """
             SELECT 
                 o.order_id, 
-                o.order_code,            
+                o.order_code,
                 os.status_name,          
                 o.order_date, 
                 o.order_delivery_date,   
                 pp.pickup_point_address AS pickup_address, 
-                ua.user_login AS client_name               
+                ua.user_login AS client_name,
+                -- Собираем строку формата: артикул, количество
+                STRING_AGG(op.product_article || ', ' || op.count, ', ') AS product_details 
             FROM 
                 "order" o
             JOIN 
@@ -538,6 +536,10 @@ class Database:
                 pickup_point pp ON o.order_pickup_point_id = pp.pickup_point_id
             LEFT JOIN  
                 user_account ua ON o.order_client_id = ua.user_id 
+            LEFT JOIN
+                order_product op ON o.order_id = op.order_id
+            GROUP BY 
+                o.order_id, o.order_code, os.status_name, pp.pickup_point_address, ua.user_login
             ORDER BY 
                 o.order_date DESC;
         """
@@ -550,22 +552,19 @@ class Database:
             for row in self.cursor.fetchall():
                 order_data = dict(zip(columns, row))
 
-                # Форматируем даты
-                if order_data.get('order_date'):
-                    # Преобразуем объект datetime в строку
-                    order_data['order_date'] = order_data['order_date'].strftime('%d.%m.%Y %H:%M')
+                # Форматирование дат
+                for date_key in ['order_date', 'order_delivery_date']:
+                    if order_data.get(date_key):
+                        order_data[date_key] = order_data[date_key].strftime('%d.%m.%Y')
 
-                delivery_date = order_data.get('order_delivery_date')
-                if delivery_date:
-                    order_data['order_delivery_date'] = delivery_date.strftime('%d.%m.%Y')
-                else:
-                    order_data['order_delivery_date'] = "Н/Д"
+                # Если товаров нет, ставим заглушку
+                if not order_data.get('product_details'):
+                    order_data['product_details'] = "Без товаров"
 
                 orders.append(order_data)
-
             return orders
-
         except Exception as e:
+            print(f"Ошибка получения заказов: {e}")
             return []
 
     def close(self):

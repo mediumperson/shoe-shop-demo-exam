@@ -20,7 +20,7 @@ class Ui_Login(object):
         self.label.setGeometry(QtCore.QRect(140, 20, 171, 141))
         self.label.setStyleSheet("")
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("images/Icon.JPG"))
+        self.label.setPixmap(QtGui.QPixmap("../images/Icon.JPG"))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(parent=self.centralwidget)

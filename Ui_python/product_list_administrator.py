@@ -158,7 +158,7 @@ class Ui_ProductListAdministratorWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 953, 434))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 953, 410))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.scrollAreaWidgetContents)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
@@ -320,6 +320,10 @@ class Ui_ProductListAdministratorWindow(object):
         self.horizontalLayout_2.addLayout(self.verticalLayout)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.gridLayout_2.addWidget(self.scrollArea, 3, 0, 1, 1)
+        self.label_3 = QtWidgets.QLabel(parent=self.centralwidget)
+        self.label_3.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.label_3.setObjectName("label_3")
+        self.gridLayout_2.addWidget(self.label_3, 0, 0, 1, 1)
         ProductListAdministratorWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=ProductListAdministratorWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 975, 33))
@@ -352,6 +356,7 @@ class Ui_ProductListAdministratorWindow(object):
         self.price_5.setText(_translate("ProductListAdministratorWindow", "Цена: *цена*"))
         self.metric_5.setText(_translate("ProductListAdministratorWindow", "Единица измерения: *шт*"))
         self.quantity_5.setText(_translate("ProductListAdministratorWindow", "Количество на складе: *кол-во*"))
+        self.label_3.setText(_translate("ProductListAdministratorWindow", "Каталог товаров"))
 
 
 if __name__ == "__main__":

@@ -1,8 +1,7 @@
 import os
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QWidget, QLabel
-from PyQt6 import QtCore, QtGui, QtWidgets
-from card_widget_ui import Ui_Form  # Предположительно, это ваш UI-файл
+from PyQt6.QtWidgets import QWidget
+from PyQt6 import QtCore, QtGui
+from Ui_python.card_widget_ui import Ui_Form  # Предположительно, это ваш UI-файл
 
 # ВАЖНО: Путь должен быть правильным
 IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'

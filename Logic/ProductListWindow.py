@@ -1,10 +1,10 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore
 from PyQt6.QtWidgets import QMainWindow, QWidget, QMessageBox
 from PyQt6.QtGui import QColor, QIcon
-from product_list_administrator import Ui_ProductListAdministratorWindow
-from AddAndEditProductLogic import AddProductWindow
-from ProductCardWidget import ProductCardWidget
-from OrderListWindow import OrderListWindow
+from Ui_python.product_list_administrator import Ui_ProductListAdministratorWindow
+from Logic.AddAndEditProductLogic import AddProductWindow
+from Logic.ProductCardWidget import ProductCardWidget
+from Logic.OrderListWindow import OrderListWindow
 
 IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'
 
@@ -47,7 +47,7 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
         self.add_product.hide()
         self.label_2.setText(username)
 
-        if self.current_user_role == 1:
+        if self.current_user_role == 1 or 4:
             self.search.show()
             self.label.show()
             self.dillers.show()
@@ -110,7 +110,7 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
         # 4. Настройка и отображение окна
         self.add_window.setWindowFlag(QtCore.Qt.WindowType.Window)
         self.add_window.setParent(None)
-        self.add_window.setWindowIcon(QIcon('C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images\\Icon.png'))
+        self.add_window.setWindowIcon(QIcon('/images/Icon.png'))
         self.add_window.setWindowTitle("Добавление товара")
         self.add_window.show()
         self.add_window.activateWindow()

@@ -373,7 +373,7 @@ QComboBox#storage:focus {
          <x>0</x>
          <y>0</y>
          <width>953</width>
-         <height>434</height>
+         <height>410</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -637,6 +637,16 @@ QWidget#widget_product:hover {
         </item>
        </layout>
       </widget>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Каталог товаров</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
      </widget>
     </item>
    </layout>

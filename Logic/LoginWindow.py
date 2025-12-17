@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QMainWindow, QMessageBox
 from PyQt6.QtGui import QIcon
 
 
-from login_window_ui import Ui_Login
+from Ui_python.login_window_ui import Ui_Login
 
 
 
@@ -31,7 +31,7 @@ class LoginWindow(QMainWindow, Ui_Login):
         if self.user_role:
             self.app_controller.open_product_list(self.user_role, self.username)
         else:
-            QMessageBox.warning(self, "Предупреждение", "Неверный логин или пароль")
+            QMessageBox.critical(self, "Ошибка", "Неверный логин или пароль")
             self.login_input.clear()
             self.password_input.clear()
 

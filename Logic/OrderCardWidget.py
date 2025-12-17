@@ -1,8 +1,8 @@
 # order_card_widget.py
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
-
 
 
 
@@ -119,53 +119,32 @@ class Ui_OrderCard(object):
 
 
 class OrderCardWidget(QWidget, Ui_OrderCard):
-    # Сигнал: испускается при клике (ID заказа, сам виджет)
     order_clicked = QtCore.pyqtSignal(int, QWidget)
 
     def __init__(self, order_data: dict, parent=None):
         super().__init__(parent)
-
         self.setupUi(self)
-
-        # Сохраняем ID и заполняем данные
-        self.order_id = int(order_data.get('order_id', -1))
+        # Сохраняем реальный числовой ID для базы данных
+        self.db_id = int(order_data.get('order_id', 0))
+        # Сгенерированный артикул (товары + кол-во)
+        self.generated_articul = order_data.get('product_details', 'Нет данных')
         self.fill_data(order_data)
+        self.setWindowIcon(QIcon('C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images\\Icon.png'))
 
     def fill_data(self, data: dict):
-        """Заполнение меток данными из словаря."""
-
-        code = data.get('order_code') or str(data.get('order_id', 'Н/Д'))
-        self.label_art.setText(f"<b>Артикул заказа: {self.order_id}</b>")
-
+        self.label_art.setText(f"<b>Артикул: {self.generated_articul}</b>")
         self.label_status.setText(f"Статус: {data.get('status_name', 'Н/Д')}")
-
-        address = data.get('pickup_address', 'Не указан')
-        self.label_adress.setText(f"Адрес пункта выдачи: {address}")
-
-        self.label_order_date.setText(f"Дата заказа: {data.get('order_date', 'Н/Д')}")
-
-        # Дата доставки
-        delivery_date = data.get('order_delivery_date', 'Н/Д')
-        self.label_delivery_date.setText(f"Плановая доставка:\n{delivery_date}")
+        self.label_adress.setText(f"Пункт выдачи: {data.get('pickup_address', 'Не указан')}")
+        self.label_order_date.setText(f"Заказано: {data.get('order_date', 'Н/Д')}")
+        self.label_delivery_date.setText(f"Доставка:\n{data.get('order_delivery_date', 'Н/Д')}")
 
     def set_selected(self, is_selected: bool):
+        style = "border: 3px solid #00FA9A;" if is_selected else "border: 1px solid #000;"
+        self.widget_order.setStyleSheet(f"QWidget#widget_order {{ {style} }}")
 
-        if is_selected:
-            # Стили для выделенного (используем виджет-контейнер)
-            self.widget_order.setStyleSheet(
-                "QWidget#widget_order { border: 3px solid #00FA9A;}"
-                "QWidget#widget_order:hover { border: 3px solid #00FA9A; }"
-            )
-        else:
-            # Сброс стилей (используем виджет-контейнер)
-            self.widget_order.setStyleSheet(
-                "QWidget#widget_order { border: 1px solid #000; background-color: none; }"
-                "QWidget#widget_order:hover { border: 2px solid #00FA9A; }"
-            )
-
-    # Обработка события клика мыши для испускания сигнала
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
-            self.order_clicked.emit(self.order_id, self)
+            # Испускаем ЧИСЛОВОЙ ID (int)
+            self.order_clicked.emit(self.db_id, self)
         super().mousePressEvent(event)
 
