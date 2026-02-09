@@ -162,7 +162,6 @@ class Database:
             return None
 
     def add_product(self, data: dict) -> bool:
-        # (Опущен для краткости, остался без изменений)
         if self.cursor is None:
             QMessageBox.critical(None, "Ошибка БД", "Курсор не инициализирован для записи.")
             return False

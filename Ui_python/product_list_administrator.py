@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_ProductListAdministratorWindow(object):
     def setupUi(self, ProductListAdministratorWindow):
         ProductListAdministratorWindow.setObjectName("ProductListAdministratorWindow")
-        ProductListAdministratorWindow.resize(975, 605)
+        ProductListAdministratorWindow.resize(975, 627)
         ProductListAdministratorWindow.setMinimumSize(QtCore.QSize(275, 0))
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
@@ -54,8 +54,20 @@ class Ui_ProductListAdministratorWindow(object):
 "}")
         self.orders.setObjectName("orders")
         self.horizontalLayout_3.addWidget(self.orders)
+        self.test = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.test.setMinimumSize(QtCore.QSize(200, 0))
+        self.test.setMaximumSize(QtCore.QSize(200, 50))
+        self.test.setStyleSheet("QPushButton#test{\n"
+"    border: 1px solid #000; \n"
+"    background-color:#7FFF00;\n"
+"}\n"
+"QPushButton#test:hover {\n"
+"    background-color:#00FA9A;\n"
+"}")
+        self.test.setObjectName("test")
+        self.horizontalLayout_3.addWidget(self.test)
         self.remove_product = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.remove_product.setMinimumSize(QtCore.QSize(250, 0))
+        self.remove_product.setMinimumSize(QtCore.QSize(200, 0))
         self.remove_product.setMaximumSize(QtCore.QSize(250, 50))
         self.remove_product.setStyleSheet("QPushButton#remove_product{\n"
 "    border: 1px solid #000; \n"
@@ -68,7 +80,7 @@ class Ui_ProductListAdministratorWindow(object):
         self.horizontalLayout_3.addWidget(self.remove_product)
         self.add_product = QtWidgets.QPushButton(parent=self.centralwidget)
         self.add_product.setMinimumSize(QtCore.QSize(250, 0))
-        self.add_product.setMaximumSize(QtCore.QSize(250, 50))
+        self.add_product.setMaximumSize(QtCore.QSize(200, 50))
         self.add_product.setStyleSheet("QPushButton#add_product{\n"
 "    border: 1px solid #000; \n"
 "    background-color:#7FFF00;\n"
@@ -158,7 +170,7 @@ class Ui_ProductListAdministratorWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 953, 410))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 953, 432))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.scrollAreaWidgetContents)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
@@ -338,6 +350,7 @@ class Ui_ProductListAdministratorWindow(object):
         ProductListAdministratorWindow.setWindowTitle(_translate("ProductListAdministratorWindow", "MainWindow"))
         self.exit_product_list.setText(_translate("ProductListAdministratorWindow", "Выход"))
         self.orders.setText(_translate("ProductListAdministratorWindow", "Заказы"))
+        self.test.setText(_translate("ProductListAdministratorWindow", "Тестирование"))
         self.remove_product.setText(_translate("ProductListAdministratorWindow", "Удалить товар"))
         self.add_product.setText(_translate("ProductListAdministratorWindow", "Добавить товар"))
         self.search.setPlaceholderText(_translate("ProductListAdministratorWindow", "Поиск"))

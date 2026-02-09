@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>975</width>
-    <height>605</height>
+    <height>627</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -105,10 +105,38 @@ QPushButton#orders:hover {
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="test">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#test{
+    border: 1px solid #000; 
+	background-color:#7FFF00;
+}
+QPushButton#test:hover {
+    background-color:#00FA9A;
+}</string>
+        </property>
+        <property name="text">
+         <string>Тестирование</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="remove_product">
         <property name="minimumSize">
          <size>
-          <width>250</width>
+          <width>200</width>
           <height>0</height>
          </size>
         </property>
@@ -142,7 +170,7 @@ QPushButton#remove_product:hover {
         </property>
         <property name="maximumSize">
          <size>
-          <width>250</width>
+          <width>200</width>
           <height>50</height>
          </size>
         </property>
@@ -373,7 +401,7 @@ QComboBox#storage:focus {
          <x>0</x>
          <y>0</y>
          <width>953</width>
-         <height>410</height>
+         <height>432</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_2">

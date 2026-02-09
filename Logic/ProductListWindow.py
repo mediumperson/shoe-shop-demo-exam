@@ -5,10 +5,9 @@ from Ui_python.product_list_administrator import Ui_ProductListAdministratorWind
 from Logic.AddAndEditProductLogic import AddProductWindow
 from Logic.ProductCardWidget import ProductCardWidget
 from Logic.OrderListWindow import OrderListWindow
+from Logic.TestLogic import Test
 
 IMAGE_FOLDER = 'C:\\Users\\nightmare\\PycharmProjects\\FinalProject\\images'
-
-
 
 class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
     product_selection_changed = QtCore.pyqtSignal(str)
@@ -24,6 +23,7 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
         self.db_manager = database
         self.edit_window = None
         self.add_window = None
+        self.test_window = None
         self.selected_card_widget = None
         self.selected_card_article = None
         self.current_user_role = user_role
@@ -36,7 +36,6 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
         self.connect_signals()
         self.load_products()
 
-
         self.search.hide()
         self.label.hide()
         self.dillers.hide()
@@ -45,6 +44,7 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
         self.orders.hide()
         self.remove_product.hide()
         self.add_product.hide()
+        self.test.hide()
         self.label_2.setText(username)
 
         if self.current_user_role == 1 or 4:
@@ -54,6 +54,7 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
             self.label_4.show()
             self.storage.show()
             self.orders.show()
+            self.test.show()
             self.remove_product.show()
             self.add_product.show()
         elif self.current_user_role == 2:
@@ -64,29 +65,21 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
             self.storage.show()
             self.orders.show()
 
-
+    def execute_silent_test(self):
+        self.tester = Test(self.db_manager)
+        self.tester.positive_test()
+        self.load_products()
+        QMessageBox.information(self, "Успех", "Тестовый товар добавлен в базу данных!")
 
     def handle_product_card_click(self, article: str, clicked_widget: ProductCardWidget):
-
-        # 1. ПОВТОРНЫЙ КЛИК (Редактирование)
-        # Проверяем, совпадает ли кликнутый виджет с текущим выделенным
         if clicked_widget == self.selected_card_widget:
-
-            # Снимаем выделение
             clicked_widget.set_selected(False)
             self.selected_card_widget = None
             self.selected_card_article = None
-
             self.open_edit_product_screen(article)
-
-        # 2. ОДИНОЧНЫЙ/НОВЫЙ КЛИК (Выделение)
         else:
-
-            # Снимаем выделение с предыдущей карточки (если она была)
             if self.selected_card_widget:
                 self.selected_card_widget.set_selected(False)
-
-            # Выделяем новую карточку
             clicked_widget.set_selected(True)
             self.selected_card_widget = clicked_widget
             self.selected_card_article = article
@@ -94,20 +87,15 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
     def open_add_product_screen(self):
         if self.add_window:
             self.add_window.product_added.disconnect()
-
             self.add_window.close()
             self.add_window.deleteLater()
             self.add_window = None
-
         self.add_window = AddProductWindow(self.db_manager)
-
         try:
             self.add_window.product_added.connect(self.load_products)
             self.add_window.product_added.connect(self.load_suppliers)
         except Exception as e:
             print(f"Ошибка подключения сигнала (add_product): {e}")
-
-        # 4. Настройка и отображение окна
         self.add_window.setWindowFlag(QtCore.Qt.WindowType.Window)
         self.add_window.setParent(None)
         self.add_window.setWindowIcon(QIcon('/images/Icon.png'))
@@ -117,84 +105,51 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
 
     def get_search_params(self):
         params = {}
-
-        # 1. Поиск (self.search - QLineEdit)
         search_term = self.search.text().strip()
-        # Проверка гарантирует, что при пустом поле ввода, ключ 'search_term' не попадает в params
         if search_term:
             params['search_term'] = search_term
-
-        # 2. Поставщик (self.dillers - QComboBox)
         supplier = self.dillers.currentText()
         if supplier and supplier.strip() != "Все поставщики":
             params['supplier_name'] = supplier
-
-        # 3. Количество на складе (self.storage - QComboBox)
         stock_option = self.storage.currentText().strip()
         params['stock_filter'] = stock_option
-
-        # Если все поля пустые, возвращается {} — это сбрасывает поиск
         return params
 
     def handle_delete_product(self):
-        # ... (код остается без изменений)
-        # 1. Проверяем, выбран ли товар
         if not self.selected_card_article:
             QMessageBox.warning(self, "Ошибка", "Сначала выберите товар для удаления.")
             return
-
         article_to_delete = self.selected_card_article
-
         reply = QMessageBox.question(self, 'Подтверждение',
                                      f"Вы уверены, что хотите удалить товар с артикулом {article_to_delete}?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                                      QMessageBox.StandardButton.No)
-
         if reply == QMessageBox.StandardButton.Yes:
             if self.db_manager.delete_product_by_article(article_to_delete):
                 QMessageBox.information(self, "Успех", f"Товар {article_to_delete} успешно удален!")
                 self.load_products()
-            else:
-                pass
 
     def request_logout(self):
-        """Испускает сигнал для главного цикла о необходимости вернуться к логину."""
         self.logout_requested.emit()
         self.close()
 
     def open_edit_product_screen(self, article: str):
-        # 1. Получаем данные товара из БД
         if self.current_user_role == 1:
             product_data = self.db_manager.get_product_by_article(article)
-
             if not product_data:
                 QMessageBox.critical(self, "Ошибка", f"Товар с артикулом {article} не найден в базе данных.")
                 return
-
             if self.edit_window:
                 self.edit_window.product_added.disconnect()
                 self.edit_window.close()
                 self.edit_window.deleteLater()
                 self.edit_window = None
-
-            # 3. Создание окна редактирования
             self.edit_window = AddProductWindow(self.db_manager)
-
-            # 4. Загрузка данных в форму (ключевой шаг)
             self.edit_window.load_product_data(product_data)
-
-            # 5. Подключение сигнала для обновления списка после сохранения
             try:
                 self.edit_window.product_added.connect(self.load_products)
             except Exception as e:
                 print(f"Ошибка подключения сигнала (edit_product): {e}")
-
-            try:
-                self.edit_window.finished.connect(self.handle_edit_window_close_unselect)
-
-            except Exception as e:
-                print(f"Ошибка подключения finished: {e}")
-            # 6. Настройка и отображение окна
             self.edit_window.setWindowFlag(QtCore.Qt.WindowType.Window)
             self.edit_window.setParent(None)
             self.edit_window.show()
@@ -206,15 +161,19 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
         self.remove_product.clicked.connect(self.handle_delete_product)
         self.orders.clicked.connect(self.open_orders_screen)
 
+        self.test.clicked.connect(self.open_test_screen)
+
         self.search.textChanged.connect(self.load_products)
-
         self.dillers.currentIndexChanged.connect(self.load_products)
-
         self.storage.currentIndexChanged.connect(self.load_products)
+
+    def open_test_screen(self):
+        self.test_window = Test(self.db_manager)
+        self.test_window.product_added.connect(self.load_products)
+        self.test_window.show()
 
 
     def clear_product_list(self):
-        # ... (код остается без изменений)
         self.selected_card_article = None
         self.selected_card_widget = None
         while self.verticalLayout.count():
@@ -225,9 +184,7 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
             elif item.layout() is not None:
                 self._clear_layout_recursively(item.layout())
 
-
     def _clear_layout_recursively(self, layout):
-        # ... (код остается без изменений)
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()
@@ -238,42 +195,25 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
 
     def load_products(self):
         self.clear_product_list()
-
         search_params = self.get_search_params()
-
         try:
             products = self.db_manager.get_products_by_filter(search_params)
-
         except Exception as e:
             print(f"Ошибка при получении списка товаров из БД: {e}")
             QMessageBox.critical(self, "Ошибка БД", f"Не удалось загрузить товары: {e}")
             products = []
-
-
         if products:
             self.display_products(products)
 
     def load_suppliers(self):
-        """
-        Загружает список поставщиков из БД и заполняет self.dillers.
-        """
         self.dillers.clear()
-
-        # 1. Добавляем нейтральный элемент
         self.dillers.addItem("Все поставщики")
-
-        # 2. Получаем актуальный список из БД
         suppliers = self.db_manager.get_all_suppliers()
-
-        # 3. Добавляем поставщиков
         for supplier in suppliers:
             self.dillers.addItem(supplier)
-
-        # Устанавливаем нейтральный элемент как текущий
         self.dillers.setCurrentIndex(0)
 
     def display_products(self, products):
-        # ... (код остается без изменений)
         for product in products:
             card = ProductCardWidget(product)
             card.product_clicked.connect(self.handle_product_card_click)
@@ -281,16 +221,12 @@ class ProductListWindow(QMainWindow, Ui_ProductListAdministratorWindow):
         self.verticalLayout.addStretch(1)
 
     def open_orders_screen(self):
-
-        # Предполагаем, что self.current_user_role — это данные пользователя (или роль)
         user_data = {'role': self.current_user_role}
-
         if not hasattr(self, 'orders_window') or self.orders_window is None:
             self.orders_window = OrderListWindow(
                 database=self.db_manager,
                 user_data=user_data,
-                parent=self  # Передаем self (ProductListWindow) как родителя
+                parent=self
             )
-
         self.orders_window.show()
         self.orders_window.activateWindow()
